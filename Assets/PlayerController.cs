@@ -6,15 +6,17 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    public float speed;
-    private Vector2 move, mouseLook;
+    public float speed = 5f;
+    private Vector2 move;
+    private Vector2 mouseLook;
     private Vector3 rotationTarget;
     private Rigidbody rb;
+    public float drag = 5f;
 
-    void Awake()
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true; 
+        rb.drag = drag;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -27,32 +29,38 @@ public class PlayerController : MonoBehaviour
         mouseLook = context.ReadValue<Vector2>();
     }
 
-    void Update()
+    private void Update()
     {
+
+        UpdateRotationToCursor();
+
+        MovePlayer();
+    }
+
+    private void UpdateRotationToCursor()
+    {
+
         Ray ray = Camera.main.ScreenPointToRay(mouseLook);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             rotationTarget = hit.point;
         }
-    }
-
-    void FixedUpdate()
-    {
-        movePlayerWithAim();
-    }
-
-    public void movePlayerWithAim()
-    {
-        Vector3 movement = new Vector3(move.x, 0f, move.y).normalized * speed * Time.fixedDeltaTime;
         Vector3 lookPos = rotationTarget - transform.position;
         lookPos.y = 0;
-        Quaternion rotation = Quaternion.LookRotation(lookPos);
 
-        if (movement != Vector3.zero)
+        if (lookPos != Vector3.zero)
         {
-            rb.MoveRotation(Quaternion.Slerp(transform.rotation, rotation, 0.15f));
-            rb.MovePosition(rb.position + movement); // Move the player with Rigidbody
+            Quaternion targetRotation = Quaternion.LookRotation(lookPos);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.2f);
         }
     }
 
+    private void MovePlayer()
+    {
+
+        Vector3 movement = new Vector3(move.x, 0f, move.y).normalized;
+
+
+        rb.velocity = new Vector3(movement.x * speed, rb.velocity.y, movement.z * speed);
+    }
 }
