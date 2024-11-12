@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Solid
+  - Enemy
+  - Weapon
+  - weaponSpot
+  - weaponSpotGun
+  - MainObjective
   layers:
   - Default
   - TransparentFX
