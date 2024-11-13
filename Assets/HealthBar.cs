@@ -1,20 +1,49 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine; 
+using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBar: MonoBehaviour 
+public class HealthBar : MonoBehaviour
 {
     public Slider healthBar;
-    public Health playerHealth;
+    private Health healthComponent;
+    public Transform transformObject;
 
-    private void Start(){
-        playerHealth = GameObject.FindGameObjectWithTag("Player").GetComponent<Health>();
-        healthBar = GetComponent<Slider>();
-        healthBar.maxValue = playerHealth.health;
-        healthBar.value = playerHealth.health;
+    private void Start()
+    {
+        // Jesli HealthBar jest przypisany do gracza, znajdz jego komponent zdrowia
+        if (gameObject.CompareTag("Player"))
+        {
+            healthComponent = GameObject.FindGameObjectWithTag("Player").GetComponent<Health>();
+        }
+        else
+        {
+            // Przypisz komponent Health do obiektu, do ktorego jest przypiety pasek zdrowia (np. Enemy)
+            healthComponent = GetComponentInParent<Health>();
+        }
+
+        if (healthComponent != null && healthBar != null)
+        {
+            healthBar.maxValue = healthComponent.health;
+            healthBar.value = healthComponent.health;
+        }
+        else
+        {
+            Debug.LogError("Health component or HealthBar Slider not found.");
+        }
     }
-    public void SetHealth(float hp){
-        healthBar.value = hp;
+
+    void Update()
+    {
+        transform.rotation = Quaternion.identity; // Brak rotacji
+
+    }
+
+    public void SetHealth(float hp)
+    {
+        if (healthBar != null)
+        {
+            healthBar.value = hp;
+        }
     }
 }
