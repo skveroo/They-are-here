@@ -5,13 +5,20 @@ using UnityEngine.SceneManagement;
 
 public class Health : MonoBehaviour
 {
-
+    public float lowHealth = 0f; 
     public float health = 100f;
     public string enemyTag = "Enemy";
+    public HealthBar healthBar;
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space)) { TakeDamage(10); }
+    }
 
     public void TakeDamage(float damage)
     {
         health -= damage;
+        //healthBar.SetHealth(health);
 
         if (health <= 0)
         {
