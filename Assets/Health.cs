@@ -12,13 +12,14 @@ public class Health : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) { TakeDamage(10); }
+        if (Input.GetKeyDown(KeyCode.Space) && gameObject.CompareTag("Player")) {
+                TakeDamage(10); }
     }
 
     public void TakeDamage(float damage)
     {
         health -= damage;
-        //healthBar.SetHealth(health);
+        healthBar.SetHealth(health);
 
         if (health <= 0)
         {

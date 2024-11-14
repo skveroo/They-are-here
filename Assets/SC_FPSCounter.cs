@@ -21,7 +21,7 @@ public class SC_FPSCounter : MonoBehaviour
         timeleft = updateInterval;
 
         textStyle.fontStyle = FontStyle.Bold;
-        textStyle.normal.textColor = Color.white;
+        textStyle.normal.textColor = Color.black;
     }
 
     // Update is called once per frame
