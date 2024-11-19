@@ -19,8 +19,12 @@ public class Weapon : MonoBehaviour
     [SerializeField] private bool isAutomatic;
     [SerializeField] private int magSize;
     [SerializeField] private GameObject bulletHolePrefab;
+    [SerializeField] private GameObject currentWeapon;
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] string EnemyTag;
+    [SerializeField] private Transform bulletOrigin;
+    [SerializeField] private GameObject tracerPrefab;
+    [SerializeField] private float bulletSpeed = 20f; 
     private void Awake()
     {
         controls = new InputMenager();
@@ -33,6 +37,7 @@ public class Weapon : MonoBehaviour
 
     private void Update()
     {
+        AlignBulletOriginToAim();
         if (isShooting && readyToShoot && !isReloading && ammoLeft > 0)
         {
             bulletsShot = bulletsPerBurst;
@@ -49,25 +54,77 @@ public class Weapon : MonoBehaviour
     {
         isShooting = false;
     }
-
+    void weaponDetection()
+    {
+        GameObject[] weapons = GameObject.FindGameObjectsWithTag("Weapon");
+        foreach (GameObject obj in weapons)
+        {
+            if (obj.activeSelf)
+            {
+                currentWeapon = obj;
+            }
+        }
+    }
+    private void AlignBulletOriginToAim()
+    {
+        weaponDetection();
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+        Vector3 targetPoint;
+        if (Physics.Raycast(ray, out RaycastHit hit, bulletRange))
+        {
+            targetPoint = hit.point;
+        }
+        else
+        {
+            targetPoint = ray.origin + ray.direction * bulletRange;
+        }
+        Vector3 directionToTarget = (targetPoint - bulletOrigin.position).normalized;
+        bulletOrigin.rotation = Quaternion.LookRotation(directionToTarget);
+        if (currentWeapon != null)
+        {
+            currentWeapon.transform.rotation = Quaternion.LookRotation(directionToTarget);
+        }
+    }
     private void PerformShot()
     {
+
         readyToShoot = false;
         float x = Random.Range(-horizontalSpread, horizontalSpread);
         float y = Random.Range(-verticalSpread, verticalSpread);
-        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Vector3 direction = ray.direction + new Vector3(x, y, 0); 
-
-        if (Physics.Raycast(ray.origin, direction, out rayHit, bulletRange))
+        Vector3 direction = bulletOrigin.forward + new Vector3(x, y, 0);
+        GameObject bullet = Instantiate(tracerPrefab, bulletOrigin.position, Quaternion.identity);
+        Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+        if (bulletRb != null)
         {
-            Debug.Log("Hit: " + rayHit.collider.name);
-
-            if (rayHit.collider.CompareTag(EnemyTag))
+            bulletRb.velocity = direction.normalized * bulletSpeed;
+        }
+        Destroy(bullet, 5f);
+        if (Physics.Raycast(bulletOrigin.position, direction, out rayHit, bulletRange))
+        {
+            Destroy(bullet, 2f);
+            if (rayHit.collider.CompareTag(EnemyTag) || rayHit.collider.CompareTag("mainObjective"))
             {
+
                 Health enemyHealth = rayHit.collider.GetComponent<Health>();
                 if (enemyHealth != null)
                 {
-                    float damageAmount = 25f;
+                    weaponDetection();
+                    float damageAmount;
+                    switch (currentWeapon.name)
+                    {
+                        case "AutomaticRifle":
+                            damageAmount = 25f;
+                            break;
+
+                        case "Pistol":
+                            damageAmount = 15f;
+                            break;
+
+                        default:
+                            Debug.Log("Unknown weapon.");
+                            damageAmount = 0f;
+                            break;
+                    }
                     enemyHealth.TakeDamage(damageAmount);
                 }
             }
@@ -79,7 +136,6 @@ public class Weapon : MonoBehaviour
             }
         }
         muzzleFlash.Play();
-
         ammoLeft--;
         bulletsShot--;
         if (bulletsShot > 0 && ammoLeft > 0)
@@ -99,6 +155,8 @@ public class Weapon : MonoBehaviour
             Reload();
         }
     }
+
+
 
     private void ResumeBurst()
     {
@@ -133,3 +191,4 @@ public class Weapon : MonoBehaviour
         controls.Disable();
     }
 }
+
