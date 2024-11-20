@@ -24,7 +24,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] string EnemyTag;
     [SerializeField] private Transform bulletOrigin;
     [SerializeField] private GameObject tracerPrefab;
-    [SerializeField] private float bulletSpeed = 20f; 
+    [SerializeField] private float bulletSpeed = 20f;
     private void Awake()
     {
         controls = new InputMenager();
@@ -70,9 +70,25 @@ public class Weapon : MonoBehaviour
         weaponDetection();
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         Vector3 targetPoint;
-        if (Physics.Raycast(ray, out RaycastHit hit, bulletRange))
+        RaycastHit[] hits = Physics.RaycastAll(ray, bulletRange);
+
+        RaycastHit closestHit = default;
+        float closestDistance = Mathf.Infinity;
+        foreach (RaycastHit hit in hits)
         {
-            targetPoint = hit.point;
+            if (hit.collider.CompareTag("Transparent"))
+            {
+                continue;
+            }
+            if (hit.distance < closestDistance)
+            {
+                closestHit = hit;
+                closestDistance = hit.distance;
+            }
+        }
+        if (closestHit.collider != null)
+        {
+            targetPoint = closestHit.point;
         }
         else
         {
@@ -82,12 +98,12 @@ public class Weapon : MonoBehaviour
         bulletOrigin.rotation = Quaternion.LookRotation(directionToTarget);
         if (currentWeapon != null)
         {
-            currentWeapon.transform.rotation = Quaternion.LookRotation(directionToTarget);
+            currentWeapon.transform.rotation = Quaternion.Slerp(currentWeapon.transform.rotation, Quaternion.LookRotation(directionToTarget, Vector3.up), Time.deltaTime * 10f);
         }
     }
+
     private void PerformShot()
     {
-
         readyToShoot = false;
         float x = Random.Range(-horizontalSpread, horizontalSpread);
         float y = Random.Range(-verticalSpread, verticalSpread);
@@ -99,13 +115,28 @@ public class Weapon : MonoBehaviour
             bulletRb.velocity = direction.normalized * bulletSpeed;
         }
         Destroy(bullet, 5f);
-        if (Physics.Raycast(bulletOrigin.position, direction, out rayHit, bulletRange))
+        RaycastHit[] hits = Physics.RaycastAll(bulletOrigin.position, direction, bulletRange);
+        RaycastHit closestHit = default;
+        float closestDistance = Mathf.Infinity;
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.CompareTag("Transparent"))
+            {
+                continue;
+            }
+            if (hit.distance < closestDistance)
+            {
+                closestHit = hit;
+                closestDistance = hit.distance;
+            }
+        }
+
+        if (closestHit.collider != null)
         {
             Destroy(bullet, 2f);
-            if (rayHit.collider.CompareTag(EnemyTag) || rayHit.collider.CompareTag("mainObjective"))
+            if (closestHit.collider.CompareTag(EnemyTag) || closestHit.collider.CompareTag("mainObjective"))
             {
-
-                Health enemyHealth = rayHit.collider.GetComponent<Health>();
+                Health enemyHealth = closestHit.collider.GetComponent<Health>();
                 if (enemyHealth != null)
                 {
                     weaponDetection();
@@ -121,7 +152,6 @@ public class Weapon : MonoBehaviour
                             break;
 
                         default:
-                            Debug.Log("Unknown weapon.");
                             damageAmount = 0f;
                             break;
                     }
@@ -130,14 +160,16 @@ public class Weapon : MonoBehaviour
             }
             else
             {
-                GameObject bulletHole = Instantiate(bulletHolePrefab, rayHit.point + rayHit.normal * 0.001f, Quaternion.identity);
-                bulletHole.transform.LookAt(rayHit.point + rayHit.normal);
+                GameObject bulletHole = Instantiate(bulletHolePrefab, closestHit.point + closestHit.normal * 0.001f, Quaternion.identity);
+                bulletHole.transform.LookAt(closestHit.point + closestHit.normal);
                 Destroy(bulletHole, bulletHoleLifeSpan);
             }
         }
+
         muzzleFlash.Play();
         ammoLeft--;
         bulletsShot--;
+
         if (bulletsShot > 0 && ammoLeft > 0)
         {
             Invoke("ResumeBurst", burstDelay);
@@ -150,11 +182,13 @@ public class Weapon : MonoBehaviour
                 EndShot();
             }
         }
+
         if (ammoLeft == 0)
         {
             Reload();
         }
     }
+
 
 
 
