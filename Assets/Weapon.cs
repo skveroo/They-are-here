@@ -33,6 +33,7 @@ public class Weapon : MonoBehaviour
 
     private void Update()
     {
+        if (PauseMenu.GameIsPaused) return;
         if (isShooting && readyToShoot && !isReloading && ammoLeft > 0)
         {
             bulletsShot = bulletsPerBurst;
