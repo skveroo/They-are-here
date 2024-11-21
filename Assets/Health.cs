@@ -10,11 +10,6 @@ public class Health : MonoBehaviour
     public string enemyTag = "Enemy";
     public HealthBar healthBar;
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && gameObject.CompareTag("Player")) {
-                TakeDamage(10); }
-    }
 
     public void TakeDamage(float damage)
     {
@@ -29,24 +24,8 @@ public class Health : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log($"{gameObject.name} has died.");
-        if (gameObject.CompareTag("Player"))
-        {
-            Debug.Log("Player has died, calling GameOver.");
-            Destroy(gameObject);
-
-        }
-        else if (gameObject.CompareTag("Enemy"))
-        {
-            Debug.Log("Enemy has been destroyed, calling GameWin.");
-            Destroy(gameObject);
-
-        }
-        else
-        {
-            Destroy(gameObject);
-
-        }
+            endConditions.NotifyObjectDestroyed(gameObject);
+            Destroy(gameObject);   
     }
 }
 

@@ -9,7 +9,8 @@ TagManager:
   - Weapon
   - weaponSpot
   - weaponSpotGun
-  - MainObjective
+  - mainObjective
+  - Transparent
   layers:
   - Default
   - TransparentFX
