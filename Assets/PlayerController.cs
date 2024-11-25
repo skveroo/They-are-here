@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (PauseMenu.GameIsPaused) return;
+        if (PauseMenu.GameIsPaused == true) return;
         UpdateRotationToCursor();
 
         MovePlayer();
