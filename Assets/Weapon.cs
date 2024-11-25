@@ -37,6 +37,7 @@ public class Weapon : MonoBehaviour
 
     private void Update()
     {
+        if (PauseMenu.GameIsPaused == true) return;
         AlignBulletOriginToAim();
         if (isShooting && readyToShoot && !isReloading && ammoLeft > 0)
         {
