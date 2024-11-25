@@ -19,8 +19,12 @@ public class Weapon : MonoBehaviour
     [SerializeField] private bool isAutomatic;
     [SerializeField] private int magSize;
     [SerializeField] private GameObject bulletHolePrefab;
+    [SerializeField] private GameObject currentWeapon;
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] string EnemyTag;
+    [SerializeField] private Transform bulletOrigin;
+    [SerializeField] private GameObject tracerPrefab;
+    [SerializeField] private float bulletSpeed = 20f;
     private void Awake()
     {
         controls = new InputMenager();
@@ -51,39 +55,122 @@ public class Weapon : MonoBehaviour
     {
         isShooting = false;
     }
+    void weaponDetection()
+    {
+        GameObject[] weapons = GameObject.FindGameObjectsWithTag("Weapon");
+        foreach (GameObject obj in weapons)
+        {
+            if (obj.activeSelf)
+            {
+                currentWeapon = obj;
+            }
+        }
+    }
+    private void AlignBulletOriginToAim()
+    {
+        weaponDetection();
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+        Vector3 targetPoint;
+        RaycastHit[] hits = Physics.RaycastAll(ray, bulletRange);
+
+        RaycastHit closestHit = default;
+        float closestDistance = Mathf.Infinity;
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.CompareTag("Transparent"))
+            {
+                continue;
+            }
+            if (hit.distance < closestDistance)
+            {
+                closestHit = hit;
+                closestDistance = hit.distance;
+            }
+        }
+        if (closestHit.collider != null)
+        {
+            targetPoint = closestHit.point;
+        }
+        else
+        {
+            targetPoint = ray.origin + ray.direction * bulletRange;
+        }
+        Vector3 directionToTarget = (targetPoint - bulletOrigin.position).normalized;
+        bulletOrigin.rotation = Quaternion.LookRotation(directionToTarget);
+        if (currentWeapon != null)
+        {
+            currentWeapon.transform.rotation = Quaternion.Slerp(currentWeapon.transform.rotation, Quaternion.LookRotation(directionToTarget, Vector3.up), Time.deltaTime * 10f);
+        }
+    }
 
     private void PerformShot()
     {
         readyToShoot = false;
         float x = Random.Range(-horizontalSpread, horizontalSpread);
         float y = Random.Range(-verticalSpread, verticalSpread);
-        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Vector3 direction = ray.direction + new Vector3(x, y, 0); 
-
-        if (Physics.Raycast(ray.origin, direction, out rayHit, bulletRange))
+        Vector3 direction = bulletOrigin.forward + new Vector3(x, y, 0);
+        GameObject bullet = Instantiate(tracerPrefab, bulletOrigin.position, Quaternion.identity);
+        Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+        if (bulletRb != null)
         {
-            Debug.Log("Hit: " + rayHit.collider.name);
-
-            if (rayHit.collider.CompareTag(EnemyTag))
+            bulletRb.velocity = direction.normalized * bulletSpeed;
+        }
+        Destroy(bullet, 5f);
+        RaycastHit[] hits = Physics.RaycastAll(bulletOrigin.position, direction, bulletRange);
+        RaycastHit closestHit = default;
+        float closestDistance = Mathf.Infinity;
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.CompareTag("Transparent"))
             {
-                Health enemyHealth = rayHit.collider.GetComponent<Health>();
+                continue;
+            }
+            if (hit.distance < closestDistance)
+            {
+                closestHit = hit;
+                closestDistance = hit.distance;
+            }
+        }
+
+        if (closestHit.collider != null)
+        {
+            Destroy(bullet, 2f);
+            if (closestHit.collider.CompareTag(EnemyTag) || closestHit.collider.CompareTag("mainObjective"))
+            {
+                Health enemyHealth = closestHit.collider.GetComponent<Health>();
                 if (enemyHealth != null)
                 {
-                    float damageAmount = 25f;
+                    weaponDetection();
+                    float damageAmount;
+                    switch (currentWeapon.name)
+                    {
+                        case "AutomaticRifle":
+                            damageAmount = 25f;
+                            break;
+
+                        case "Pistol":
+                            damageAmount = 15f;
+                            break;
+
+                        default:
+                            damageAmount = 0f;
+                            break;
+                    }
                     enemyHealth.TakeDamage(damageAmount);
                 }
             }
             else
             {
-                GameObject bulletHole = Instantiate(bulletHolePrefab, rayHit.point + rayHit.normal * 0.001f, Quaternion.identity);
-                bulletHole.transform.LookAt(rayHit.point + rayHit.normal);
+                GameObject bulletHole = Instantiate(bulletHolePrefab, closestHit.point + closestHit.normal * 0.001f, Quaternion.identity);
+                bulletHole.transform.LookAt(closestHit.point + closestHit.normal);
                 Destroy(bulletHole, bulletHoleLifeSpan);
             }
         }
-        muzzleFlash.Play();
 
+        muzzleFlash.Play();
         ammoLeft--;
         bulletsShot--;
+
         if (bulletsShot > 0 && ammoLeft > 0)
         {
             Invoke("ResumeBurst", burstDelay);
@@ -96,11 +183,15 @@ public class Weapon : MonoBehaviour
                 EndShot();
             }
         }
+
         if (ammoLeft == 0)
         {
             Reload();
         }
     }
+
+
+
 
     private void ResumeBurst()
     {
