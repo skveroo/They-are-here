@@ -11,6 +11,7 @@ TagManager:
   - weaponSpotGun
   - mainObjective
   - Transparent
+  - Room
   layers:
   - Default
   - TransparentFX

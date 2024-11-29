@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
         float closestDistance = Mathf.Infinity;
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.CompareTag("Transparent"))
+            if (hit.collider.CompareTag("Transparent") || hit.collider.CompareTag("Room"))
             {
                 continue;
             }

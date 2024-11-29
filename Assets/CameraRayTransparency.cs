@@ -1,41 +1,85 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraRayTransparency : MonoBehaviour
+public class RoomTransparencyManager : MonoBehaviour
 {
     public Transform player;
-    public LayerMask obstacleMask;
     public float transparencyTransitionSpeed = 2f;
 
-    private List<Renderer> lastHitRenderers = new List<Renderer>();
+    private Dictionary<string, List<Renderer>> roomRenderers = new Dictionary<string, List<Renderer>>();
+    private HashSet<Renderer> transparentRenderers = new HashSet<Renderer>();
     private Dictionary<Renderer, float> currentAlpha = new Dictionary<Renderer, float>();
+    private Dictionary<Renderer, string> originalTags = new Dictionary<Renderer, string>();
+
+    void Start()
+    {
+        // Optional: Pre-populate rooms and renderers programmatically or through Unity Inspector
+        foreach (GameObject room in GameObject.FindGameObjectsWithTag("Room"))
+        {
+            string roomName = room.name;
+            if (!roomRenderers.ContainsKey(roomName))
+                roomRenderers[roomName] = new List<Renderer>();
+
+            Renderer[] renderers = room.GetComponentsInChildren<Renderer>();
+            roomRenderers[roomName].AddRange(renderers);
+        }
+    }
 
     void Update()
     {
-        if (player == null) return;
-        Vector3 directionToPlayer = player.position - transform.position;
-        float distanceToPlayer = directionToPlayer.magnitude;
-        RaycastHit[] hits = Physics.RaycastAll(transform.position, directionToPlayer.normalized, distanceToPlayer, obstacleMask);
-        ResetTransparency();
-        foreach (RaycastHit hit in hits)
-        {
-            Renderer hitRenderer = hit.collider.GetComponent<Renderer>();
-            if (hitRenderer != null)
-            {
-                if (!currentAlpha.ContainsKey(hitRenderer))
-                {
-                    currentAlpha[hitRenderer] = 1f;
-                }
-                currentAlpha[hitRenderer] = Mathf.Lerp(currentAlpha[hitRenderer], 0.2f, Time.deltaTime * transparencyTransitionSpeed);
-                SetTransparency(hitRenderer, currentAlpha[hitRenderer]);
+        UpdateTransparency();
+    }
 
-                if (!lastHitRenderers.Contains(hitRenderer))
+    void UpdateTransparency()
+    {
+        List<Renderer> toRemove = new List<Renderer>();
+
+        foreach (Renderer renderer in transparentRenderers)
+        {
+            if (renderer != null)
+            {
+                // Get current alpha and target alpha
+                float targetAlpha = currentAlpha.ContainsKey(renderer) ? currentAlpha[renderer] : 1f;
+
+                // Calculate the new alpha using smooth interpolation
+                float current = GetRendererAlpha(renderer);
+                float newAlpha = Mathf.Lerp(current, targetAlpha, Time.deltaTime * transparencyTransitionSpeed);
+
+                // Apply the new alpha
+                SetTransparency(renderer, newAlpha);
+
+                // Check if the target alpha is nearly reached
+                if (Mathf.Abs(newAlpha - targetAlpha) < 0.01f)
                 {
-                    lastHitRenderers.Add(hitRenderer);
+                    SetTransparency(renderer, targetAlpha); // Snap to target alpha
+                    if (Mathf.Approximately(targetAlpha, 1f)) // Fully opaque
+                    {
+                        RestoreOriginalTag(renderer);
+                        toRemove.Add(renderer); // Remove from transparency tracking
+                    }
                 }
             }
         }
+
+        // Clean up renderers that have fully transitioned
+        foreach (var renderer in toRemove)
+        {
+            transparentRenderers.Remove(renderer);
+            currentAlpha.Remove(renderer);
+        }
     }
+
+    float GetRendererAlpha(Renderer renderer)
+    {
+        // Get the current alpha from the renderer's material
+        if (renderer != null && renderer.material.HasProperty("_Color"))
+        {
+            return renderer.material.color.a;
+        }
+        return 1f; // Default to opaque if no alpha found
+    }
+
+
     void SetTransparency(Renderer renderer, float alpha)
     {
         Material[] materials = renderer.materials;
@@ -49,52 +93,65 @@ public class CameraRayTransparency : MonoBehaviour
                 material.SetFloat("_Mode", 3);
                 material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
                 material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                material.SetInt("_ZWrite", 1);
+                material.SetInt("_ZWrite", 0);
                 material.EnableKeyword("_ALPHABLEND_ON");
                 material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
                 material.DisableKeyword("_ALPHATEST_ON");
                 material.renderQueue = 3000;
-                renderer.gameObject.tag = "Transparent";
             }
         }
-    }
-    void ResetTransparency()
-    {
-        List<Renderer> toRemove = new List<Renderer>();
 
-        foreach (Renderer renderer in lastHitRenderers)
+        // Change tag to "Transparent" if not already done
+        if (!originalTags.ContainsKey(renderer))
         {
-            if (renderer != null && !IsInRaycast(renderer))
+            originalTags[renderer] = renderer.gameObject.tag; // Store original tag
+            renderer.gameObject.tag = "Transparent";
+        }
+    }
+
+    void RestoreOriginalTag(Renderer renderer)
+    {
+        if (originalTags.ContainsKey(renderer))
+        {
+            renderer.gameObject.tag = originalTags[renderer]; // Restore original tag
+            originalTags.Remove(renderer); // Remove from dictionary
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Room"))
+        {
+            string roomName = other.name;
+            if (roomRenderers.ContainsKey(roomName))
             {
-                if (currentAlpha.ContainsKey(renderer))
+                foreach (Renderer renderer in roomRenderers[roomName])
                 {
-                    currentAlpha[renderer] = Mathf.Lerp(currentAlpha[renderer], 1f, Time.deltaTime * transparencyTransitionSpeed);
-                    SetTransparency(renderer, currentAlpha[renderer]);
-                    if (Mathf.Approximately(currentAlpha[renderer], 1f))
+                    if (!transparentRenderers.Contains(renderer))
                     {
-                        toRemove.Add(renderer);
+                        transparentRenderers.Add(renderer);
+                        currentAlpha[renderer] = 0.2f; // Target transparency
                     }
                 }
             }
         }
-        foreach (var renderer in toRemove)
-        {
-            lastHitRenderers.Remove(renderer);
-            currentAlpha.Remove(renderer);
-        }
     }
-    bool IsInRaycast(Renderer renderer)
+
+    private void OnTriggerExit(Collider other)
     {
-        Vector3 directionToPlayer = player.position - transform.position;
-        float distanceToPlayer = directionToPlayer.magnitude;
-        Ray ray = new Ray(transform.position, directionToPlayer.normalized);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, distanceToPlayer, obstacleMask))
+        if (other.CompareTag("Room"))
         {
-            return hit.collider.GetComponent<Renderer>() == renderer;
+            string roomName = other.name;
+            if (roomRenderers.ContainsKey(roomName))
+            {
+                foreach (Renderer renderer in roomRenderers[roomName])
+                {
+                    if (transparentRenderers.Contains(renderer))
+                    {
+                        currentAlpha[renderer] = 1f; // Restore transparency
+                    }
+                }
+            }
         }
-
-        return false;
     }
 }
