@@ -31,6 +31,7 @@ public class WeaponSwitch : MonoBehaviour
     {
         if (isAbleToPickUp)
         {
+        
             GameObject[] allWeaponModels = GameObject.FindGameObjectsWithTag("weaponSpotGun");
             currentWeapon.SetActive(false);
             pickupWeapon.SetActive(true);
@@ -52,6 +53,7 @@ public class WeaponSwitch : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Enter");
         if (other.gameObject.tag == "Player")
         {
             isAbleToPickUp = true;
