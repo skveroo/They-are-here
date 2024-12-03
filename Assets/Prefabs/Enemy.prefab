@@ -447,6 +447,8 @@ MonoBehaviour:
   health: 100
   enemyTag: Enemy
   healthBar: {fileID: 1807746373127248045}
+  experienceOrbPrefab: {fileID: 1905205939344476213, guid: a5538c1623a9eaa4299662ffd251df9d, type: 3}
+  numberOfOrbs: 3
 --- !u!54 &7789250345528224221
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -489,6 +491,7 @@ MonoBehaviour:
   damageAmount: 10
   targetTag: Player
   damageInterval: 1
+  proximityRange: 1.5
 --- !u!1 &4439915385947934272
 GameObject:
   m_ObjectHideFlags: 0
