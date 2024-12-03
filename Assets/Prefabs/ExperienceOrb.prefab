@@ -148,4 +148,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   experienceAmount: 10
   moveSpeed: 5
-  attractionRadius: 3
+  attractionRadius: 15
