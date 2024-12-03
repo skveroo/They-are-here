@@ -26,6 +26,7 @@ public class Health : MonoBehaviour
     // Funkcja śmierci
     private void Die()
     {
+        endConditions.NotifyObjectDestroyed(gameObject);
         // Jeśli to przeciwnik, generujemy kulki doświadczenia
         if (tag == enemyTag)
         {

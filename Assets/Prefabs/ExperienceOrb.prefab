@@ -146,6 +146,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcb8d4cc94cc9524daf9a7b65dc1a6b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  experienceAmount: 10
+  experienceAmount: 3
   moveSpeed: 5
   attractionRadius: 15

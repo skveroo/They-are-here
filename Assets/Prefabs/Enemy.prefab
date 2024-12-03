@@ -449,6 +449,7 @@ MonoBehaviour:
   healthBar: {fileID: 1807746373127248045}
   experienceOrbPrefab: {fileID: 1905205939344476213, guid: a5538c1623a9eaa4299662ffd251df9d, type: 3}
   numberOfOrbs: 3
+  experiencePerOrb: 7
 --- !u!54 &7789250345528224221
 Rigidbody:
   m_ObjectHideFlags: 0
