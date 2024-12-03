@@ -297,6 +297,7 @@ GameObject:
   - component: {fileID: 6166679001829673607}
   - component: {fileID: 4501198824847804477}
   - component: {fileID: 7789250345528224221}
+  - component: {fileID: 2104784441927365486}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -427,6 +428,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d16ec29de629f684587c81e37660e8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  randomPointRange: 3
+  separationRadius: 0.5
+  repathTime: 1
 --- !u!114 &4501198824847804477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -470,6 +474,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 96
   m_CollisionDetection: 0
+--- !u!114 &2104784441927365486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2225750629283850600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bff0f4d8628a8944a7091876b316cc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 10
+  targetTag: Player
+  damageInterval: 1
 --- !u!1 &4439915385947934272
 GameObject:
   m_ObjectHideFlags: 0
