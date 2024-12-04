@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using System.Collections.Generic;
 public class PlayerExperience : MonoBehaviour
 {
     public Slider experienceSlider;       // Referencja do paska doświadczenia
@@ -13,6 +13,10 @@ public class PlayerExperience : MonoBehaviour
 
     public HealthBar health;      // referencja do komponentu HealthBar
     public float healthIncreaseAmount = 1.1f; // Ilość zwiększanego zdrowia przy awansie
+
+    public List<Weapon> weapons;    // Referencja do broni
+
+    public float damageIncreaseAmount = 1.5f;
 
     private Health playerHealth;          // Referencja do komponentu Health
 
@@ -57,7 +61,11 @@ public class PlayerExperience : MonoBehaviour
         {
             playerHealth.IncreaseMaxHealthAndUpdateHealth(healthIncreaseAmount);
             health.SetHealth(playerHealth.health);
-            
+            // Zwiększenie obrażeń każdej broni
+            foreach (Weapon weapon in weapons)
+                {
+                    weapon.damageAmount *= damageIncreaseAmount;
+                }   
         }
 
         // Zwiększenie wymagań na kolejny poziom o 40%

@@ -19,12 +19,13 @@ public class Weapon : MonoBehaviour
     [SerializeField] private bool isAutomatic;
     [SerializeField] private int magSize;
     [SerializeField] private GameObject bulletHolePrefab;
-    [SerializeField] private GameObject currentWeapon;
+    [SerializeField] public GameObject currentWeapon;
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] string EnemyTag;
     [SerializeField] private Transform bulletOrigin;
     [SerializeField] private GameObject tracerPrefab;
     [SerializeField] private float bulletSpeed = 20f;
+    public float damageAmount;
     private void Awake()
     {
         controls = new InputMenager();
@@ -141,7 +142,7 @@ public class Weapon : MonoBehaviour
                 if (enemyHealth != null)
                 {
                     weaponDetection();
-                    float damageAmount;
+                    
                     switch (currentWeapon.name)
                     {
                         case "AutomaticRifle":
