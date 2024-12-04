@@ -5,6 +5,7 @@ public class Health : MonoBehaviour
 {
     public float lowHealth = 0f; // Minimalne zdrowie
     public float health = 100f;  // Aktualne zdrowie
+    public float maxHealth = 100f; //Maksymalne zdrowie
     public string enemyTag = "Enemy"; // Tag przeciwnika
     public HealthBar healthBar; // Referencja do paska zdrowia
     public GameObject experienceOrbPrefab; // Prefab kulki doświadczenia
@@ -12,17 +13,24 @@ public class Health : MonoBehaviour
     public int experiencePerOrb = 5;  // Ilość doświadczenia za jedną kulkę
 
     // Funkcja przyjmowania obrażeń
-    public void TakeDamage(float damage)
+public void TakeDamage(float damage)
+{
+
+    health -= damage;
+    healthBar.SetHealth(health);
+    
+    if (health <= 0)
     {
-        health -= damage;
-        healthBar.SetHealth(health);  // Ustawienie paska zdrowia
-
-        if (health <= 0)
-        {
-            Die();  // Wywołanie śmierci, jeśli zdrowie wynosi 0
-        }
+        Die();
     }
+}
 
+public void IncreaseMaxHealthAndUpdateHealth(float amount)
+{
+    maxHealth = maxHealth * amount;
+    health = maxHealth;
+    Debug.Log("Nowy level, nowe życie! Tyle masz teraz maksymalnego życia: " + health);
+}
     // Funkcja śmierci
     private void Die()
     {
