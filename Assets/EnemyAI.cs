@@ -6,7 +6,7 @@ public class EnemyAI : MonoBehaviour
     private NavMeshAgent agent;   // Komponent NavMeshAgent
     private Transform player;     // Transform gracza
 
-    //[SerializeField] private float detectionRadius = 50f;  // Zasięg detekcji gracza
+    [SerializeField] private float detectionRadius = 50f;  // Zasięg detekcji gracza
     [SerializeField] private float randomPointRange = 3f;  // Zakres losowego punktu wokół gracza
     [SerializeField] private float separationRadius = 2f;  // Promień separacji od innych wrogów
     [SerializeField] private float repathTime = 1f;        // Czas pomiędzy aktualizacjami ścieżki
@@ -36,7 +36,7 @@ public class EnemyAI : MonoBehaviour
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
             // Jeśli gracz jest w zasięgu detekcji, AI porusza się w jego kierunku
-            if (/*distanceToPlayer <= detectionRadius &&*/ Time.time >= nextPathUpdate)
+            if (distanceToPlayer <= detectionRadius && Time.time >= nextPathUpdate)
             {
                 Vector3 targetPosition = GetRandomPointAroundPlayer();
                 Vector3 separation = GetSeparationVector();
