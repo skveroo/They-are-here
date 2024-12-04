@@ -5,6 +5,7 @@ public class DamageDealer : MonoBehaviour
     public float damageAmount = 10f;
     public string targetTag = "Player";
     public float damageInterval = 1f;
+    public float proximityRange = 1.5f;
     private bool playerInArea = false;
     private float damageTimer = 0f;
 
@@ -33,21 +34,44 @@ public class DamageDealer : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag(targetTag))
+        {
+            ApplyDamage();
+        }
+    }
 
     private void Update()
     {
-        if (playerInArea)
+        GameObject player = GameObject.FindGameObjectWithTag(targetTag);
+
+        if (player != null)
         {
+            float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
-            damageTimer += Time.deltaTime;
-
-
-            if (damageTimer >= damageInterval)
+            if (distanceToPlayer <= proximityRange)
             {
+                damageTimer += Time.deltaTime;
 
-                ApplyDamage();
+                if (damageTimer >= damageInterval)
+                {
+                    ApplyDamage();
+                    damageTimer = 0f;
+                }
+            }
+            else if (playerInArea)
+            {
+                damageTimer += Time.deltaTime;
 
-
+                if (damageTimer >= damageInterval)
+                {
+                    ApplyDamage();
+                    damageTimer = 0f;
+                }
+            }
+            else
+            {
                 damageTimer = 0f;
             }
         }
@@ -58,14 +82,11 @@ public class DamageDealer : MonoBehaviour
     {
 
         GameObject player = GameObject.FindGameObjectWithTag(targetTag);
-        if (player != null)
+        Health playerHealth = player.GetComponent<Health>();
+        if (playerHealth != null)
         {
-            Health playerHealth = player.GetComponent<Health>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(damageAmount);
-                Debug.Log("Player took " + damageAmount + " damage.");
-            }
+            playerHealth.TakeDamage(damageAmount);
+            Debug.Log("Player took " + damageAmount + " damage.");
         }
     }
 }
