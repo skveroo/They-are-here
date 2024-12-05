@@ -2,16 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 using static System.Math;
 public class Weapon : MonoBehaviour
 {
     private InputMenager controls;
     private RaycastHit rayHit;
-    private int ammoLeft;
+    public int ammoLeft;
     private int bulletsShot;
     private bool isShooting, readyToShoot, isReloading;
 
     public GameObject player;
+    public TMP_Text ammoInfo;
     [SerializeField] private int bulletsPerBurst;
     [SerializeField] private float bulletRange;
     [SerializeField] private float fireRate, reloadTime;
@@ -43,11 +45,13 @@ public class Weapon : MonoBehaviour
     private void Update()
     {
         if (PauseMenu.GameIsPaused == true) return;
+        ammoInfo.text = "Ammo: " + ammoLeft + "/" + magSize;
         AlignBulletOriginToAim();
         if (isShooting && readyToShoot && !isReloading && ammoLeft > 0)
         {
             bulletsShot = bulletsPerBurst;
             PerformShot();
+            
         }
     }
 
