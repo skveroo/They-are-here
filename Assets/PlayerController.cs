@@ -13,10 +13,15 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     public float drag = 5f;
 
+    private bool isSprinting = false;
+    public float sprintSpeedMultiplier = 2f; // mnożnik prędkości podczas sprintu
+    private float baseSpeed;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.drag = drag;
+        baseSpeed = speed; // zapamiętanie podstawowej prędkości
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -29,9 +34,22 @@ public class PlayerController : MonoBehaviour
         mouseLook = context.ReadValue<Vector2>();
     }
 
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            isSprinting = true;
+        }
+        else if (context.canceled)
+        {
+            isSprinting = false;
+        }
+    }
+
     private void Update()
     {
-        if (PauseMenu.GameIsPaused == true) return;
+        if (PauseMenu.GameIsPaused) return;
+
         UpdateRotationToCursor();
         MovePlayer();
     }
@@ -74,6 +92,9 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 movement = new Vector3(move.x, 0f, move.y).normalized;
         rb.angularVelocity = Vector3.zero;
+
+        // Zmiana prędkości na podstawie sprintu
+        speed = isSprinting ? baseSpeed * sprintSpeedMultiplier : baseSpeed;
 
         rb.velocity = new Vector3(movement.x * speed, rb.velocity.y, movement.z * speed);
     }
