@@ -11,7 +11,6 @@ public class PlayerExperience : MonoBehaviour
     private int currentExperience = 0;    // Aktualne doświadczenie
     public int currentLevel = 1;         // Aktualny poziom gracza
 
-    public HealthBar health;      // referencja do komponentu HealthBar
     public float healthIncreaseAmount = 1.1f; // Ilość zwiększanego zdrowia przy awansie
 
     public List<Weapon> weapons;    // Referencja do broni
@@ -60,7 +59,6 @@ public class PlayerExperience : MonoBehaviour
         if (playerHealth != null)
         {
             playerHealth.IncreaseMaxHealthAndUpdateHealth(healthIncreaseAmount);
-            health.SetHealth(playerHealth.health);
             // Zwiększenie obrażeń każdej broni
             foreach (Weapon weapon in weapons)
                 {

@@ -105,7 +105,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -125,9 +125,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d16ec29de629f684587c81e37660e8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 50
+  detectionRadius: 30
   randomPointRange: 3
-  separationRadius: 3
+  separationRadius: 1
   repathTime: 1
 --- !u!114 &2616909969372140860
 MonoBehaviour:
@@ -149,6 +149,8 @@ MonoBehaviour:
   experienceOrbPrefab: {fileID: 1905205939344476213, guid: a5538c1623a9eaa4299662ffd251df9d, type: 3}
   numberOfOrbs: 3
   experiencePerOrb: 14
+  healthSlider: {fileID: 0}
+  healthText: {fileID: 0}
 --- !u!114 &2570182762149311349
 MonoBehaviour:
   m_ObjectHideFlags: 0
