@@ -2485,6 +2485,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1089320151}
+  - component: {fileID: 1089320152}
   m_Layer: 5
   m_Name: SettingsMenu
   m_TagString: Untagged
@@ -2519,6 +2520,22 @@ RectTransform:
   m_AnchoredPosition: {x: 16.495, y: 12.8144}
   m_SizeDelta: {x: 300.22, y: 300.719}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1089320152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089320150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f0969aaf8e372c4cbfec1482a0bec88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 0}
+  resolutionDropdown: {fileID: 1872305774}
+  fullscreenToggle: {fileID: 1982778023}
+  qualityDropdown: {fileID: 70725077}
 --- !u!1 &1142738858
 GameObject:
   m_ObjectHideFlags: 0
@@ -3709,6 +3726,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: fd8fd42ffc43cac429879ab52f246588, type: 2}
   resolutionDropdown: {fileID: 1872305774}
+  fullscreenToggle: {fileID: 0}
+  qualityDropdown: {fileID: 0}
 --- !u!1 &1373885579
 GameObject:
   m_ObjectHideFlags: 0
