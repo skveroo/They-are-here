@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using static System.Math;
 public class Weapon : MonoBehaviour
 {
     private InputMenager controls;
@@ -11,6 +11,7 @@ public class Weapon : MonoBehaviour
     private int bulletsShot;
     private bool isShooting, readyToShoot, isReloading;
 
+    public GameObject player;
     [SerializeField] private int bulletsPerBurst;
     [SerializeField] private float bulletRange;
     [SerializeField] private float fireRate, reloadTime;
@@ -26,8 +27,11 @@ public class Weapon : MonoBehaviour
     [SerializeField] private GameObject tracerPrefab;
     [SerializeField] private float bulletSpeed = 20f;
     public float damageAmount;
+    public PlayerExperience playerExp;
     private void Awake()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
+        playerExp = player.GetComponent<PlayerExperience>();
         controls = new InputMenager();
         ammoLeft = magSize;
         readyToShoot = true;
@@ -106,6 +110,7 @@ public class Weapon : MonoBehaviour
 
     private void PerformShot()
     {
+        
         readyToShoot = false;
         float x = Random.Range(-horizontalSpread, horizontalSpread);
         float y = Random.Range(-verticalSpread, verticalSpread);
@@ -146,11 +151,11 @@ public class Weapon : MonoBehaviour
                     switch (currentWeapon.name)
                     {
                         case "AutomaticRifle":
-                            damageAmount = 25f;
+                            damageAmount = (float)Pow(1.5f,(playerExp.currentLevel-1))*25f;
                             break;
 
                         case "Pistol":
-                            damageAmount = 15f;
+                            damageAmount = (float)Pow(1.5f,(playerExp.currentLevel-1))*15f;
                             break;
 
                         default:

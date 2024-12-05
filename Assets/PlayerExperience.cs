@@ -9,7 +9,7 @@ public class PlayerExperience : MonoBehaviour
     public TextMeshProUGUI levelText;     // Referencja do tekstu poziomu
     public float maxExperience = 100;     // Maksymalna wartość doświadczenia
     private int currentExperience = 0;    // Aktualne doświadczenie
-    private int currentLevel = 1;         // Aktualny poziom gracza
+    public int currentLevel = 1;         // Aktualny poziom gracza
 
     public HealthBar health;      // referencja do komponentu HealthBar
     public float healthIncreaseAmount = 1.1f; // Ilość zwiększanego zdrowia przy awansie
