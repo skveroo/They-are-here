@@ -14,8 +14,8 @@ public TMPro.TMP_Dropdown qualityDropdown; // Dodaj Dropdown do ustawień jakoś
 
     void Start()
     {
-        resolutions = Screen.resolutions;
 
+        resolutions = Screen.resolutions;
         // Wczytywanie zapisanej rozdzielczości i ustawienia
         int savedResolutionWidth = PlayerPrefs.GetInt("ResolutionWidth", Screen.currentResolution.width);
         int savedResolutionHeight = PlayerPrefs.GetInt("ResolutionHeight", Screen.currentResolution.height);
@@ -40,7 +40,6 @@ public TMPro.TMP_Dropdown qualityDropdown; // Dodaj Dropdown do ustawień jakoś
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
-
         // Ustawienie toggle dla fullscreen
         fullscreenToggle.isOn = savedFullscreen;
 
