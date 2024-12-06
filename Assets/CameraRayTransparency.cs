@@ -11,24 +11,46 @@ public class RoomTransparencyManager : MonoBehaviour
     private Dictionary<Renderer, float> currentAlpha = new Dictionary<Renderer, float>();
     private Dictionary<Renderer, string> originalTags = new Dictionary<Renderer, string>();
 
+
     void Start()
     {
-        // Optional: Pre-populate rooms and renderers programmatically or through Unity Inspector
-        foreach (GameObject room in GameObject.FindGameObjectsWithTag("Room"))
+        if (player == null)
+    {
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
         {
-            string roomName = room.name;
-            if (!roomRenderers.ContainsKey(roomName))
-                roomRenderers[roomName] = new List<Renderer>();
-
-            Renderer[] renderers = room.GetComponentsInChildren<Renderer>();
-            roomRenderers[roomName].AddRange(renderers);
+            player = playerObject.transform;
         }
+        else
+        {
+            Debug.LogError("Player not found! Make sure the player object has the tag 'Player'.");
+        }
+    }
+        // Optional: Pre-populate rooms and renderers programmatically or through Unity Inspector
+              InitializeRooms();  // Inicjalizacja pokoi 
     }
 
     void Update()
     {
         UpdateTransparency();
+        
     }
+
+public void InitializeRooms()
+{
+    roomRenderers.Clear();
+    foreach (GameObject room in GameObject.FindGameObjectsWithTag("Room"))
+    {
+        string roomName = room.name;
+        if (!roomRenderers.ContainsKey(roomName))
+            roomRenderers[roomName] = new List<Renderer>();
+
+        Renderer[] renderers = room.GetComponentsInChildren<Renderer>();
+        roomRenderers[roomName].AddRange(renderers);
+    }
+}
+
+
 
     void UpdateTransparency()
     {
@@ -38,6 +60,7 @@ public class RoomTransparencyManager : MonoBehaviour
         {
             if (renderer != null)
             {
+                Debug.Log("Updating transparency for: " + renderer.gameObject.name);
                 // Get current alpha and target alpha
                 float targetAlpha = currentAlpha.ContainsKey(renderer) ? currentAlpha[renderer] : 1f;
 
