@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class endConditions : MonoBehaviour
 {
     public GameObject endScreen;
+    public MonoBehaviour PauseMenu;
     private static endConditions instance;
 
     private void Awake()
@@ -44,11 +45,13 @@ public class endConditions : MonoBehaviour
 
     public void RestartGame()
     {
+        Time.timeScale = 1f;
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
     }
     public void MainMenu()
     {
+        Time.timeScale = 0f;
         SceneManager.LoadScene("Main");
     }
 }
