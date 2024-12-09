@@ -21,6 +21,10 @@ public TMPro.TMP_Dropdown qualityDropdown; // Dodaj Dropdown do ustawień jakoś
         int savedResolutionHeight = PlayerPrefs.GetInt("ResolutionHeight", Screen.currentResolution.height);
         bool savedFullscreen = PlayerPrefs.GetInt("Fullscreen", Screen.fullScreen ? 1 : 0) == 1;
         int savedQuality = PlayerPrefs.GetInt("Quality", 2);
+
+    Debug.Log($"Saved Resolution: {savedResolutionWidth}x{savedResolutionHeight}");
+    Debug.Log($"Saved Fullscreen: {savedFullscreen}");
+    Debug.Log($"Saved Quality: {savedQuality}");
         resolutionDropdown.ClearOptions();
         List<string> options = new List<string>();
         int currentResolutionIndex = 0;

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+   
     public void PlayGame()
     {
         SceneManager.LoadScene("TestRoom"); // Zmień "GameScene" na nazwę sceny gry
