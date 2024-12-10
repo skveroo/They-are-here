@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isSprinting = false;
     public float sprintSpeedMultiplier = 2f;
-    private float baseSpeed;
+    public float baseSpeed;
 
     // Mechanika staminy
     public float maxStamina = 100f;

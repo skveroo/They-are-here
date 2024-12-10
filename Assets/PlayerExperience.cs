@@ -11,6 +11,7 @@ public class PlayerExperience : MonoBehaviour
     private int currentExperience = 0;    // Aktualne doświadczenie
     public int currentLevel = 1;         // Aktualny poziom gracza
 
+    public GameObject LevelUpgradeUI;
     public float healthIncreaseAmount = 1.1f; // Ilość zwiększanego zdrowia przy awansie
 
     public List<Weapon> weapons;    // Referencja do broni
@@ -72,6 +73,11 @@ public class PlayerExperience : MonoBehaviour
         experienceSlider.maxValue = maxExperience;
         // Aktualizacja tekstu poziomu
         UpdateLevelText();
+        if (currentLevel%5 == 0)
+        {
+            LevelUpgradeUI.SetActive(true);
+            Time.timeScale = 0f;
+        }
 
     }
 

@@ -33,7 +33,7 @@ public TMPro.TMP_Dropdown qualityDropdown; // Dodaj Dropdown do ustawień jakoś
         {
             string option = resolutions[i].width + "x" + resolutions[i].height;
             options.Add(option);
-
+            
             // Znajdowanie indeksu zapisanej rozdzielczości
             if (resolutions[i].width == savedResolutionWidth && resolutions[i].height == savedResolutionHeight)
             {
@@ -45,11 +45,11 @@ public TMPro.TMP_Dropdown qualityDropdown; // Dodaj Dropdown do ustawień jakoś
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
         // Ustawienie toggle dla fullscreen
+        if(fullscreenToggle != null){
         fullscreenToggle.isOn = savedFullscreen;
-
         // Podpięcie funkcji zmieniającej fullscreen do toggle
         fullscreenToggle.onValueChanged.AddListener(SetFullscreen);
-
+        }
         // Ustawienie rozdzielczości i trybu pełnoekranowego na starcie
         Screen.SetResolution(savedResolutionWidth, savedResolutionHeight, savedFullscreen);
 
