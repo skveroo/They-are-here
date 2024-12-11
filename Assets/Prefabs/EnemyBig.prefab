@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d16ec29de629f684587c81e37660e8aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 30
+  detectionRadius: 150
   randomPointRange: 3
   separationRadius: 1
   repathTime: 1
@@ -229,9 +229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a0d014e5d6ff0a49a7615e4dbd0e7ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: {fileID: 1386479344146810268}
   healthIncreaseAmount: 1.6
-  enemyDamage: {fileID: 3384197520699250181}
   damageIncreaseAmount: 1.9
 --- !u!1001 &7077825602967401328
 PrefabInstance:

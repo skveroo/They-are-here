@@ -5,22 +5,13 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject[] enemyPrefabs;
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private float spawnInterval = 5f;
-    [SerializeField] private float detectionRadius = 50f;
 
     private float nextSpawnTime = 0f;
-    private Transform player;
+    private Camera mainCamera;
 
     void Start()
     {
-        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        if (playerObject != null)
-        {
-            player = playerObject.transform;
-        }
-        else
-        {
-            Debug.LogError("Brak obiektu gracza z tagiem 'Player'");
-        }
+        mainCamera = Camera.main;
 
         if (enemyPrefabs.Length == 0)
         {
@@ -31,34 +22,56 @@ public class EnemySpawner : MonoBehaviour
         {
             Debug.LogError("Brak ustawionych punktów spawnu!");
         }
+
+        if (mainCamera == null)
+        {
+            Debug.LogError("Nie znaleziono g³ównej kamery w scenie!");
+        }
     }
 
     void Update()
     {
         if (Time.time >= nextSpawnTime)
         {
-            SpawnWaveIfPlayerInRange();
+            SpawnWaveInHiddenPoints();
             nextSpawnTime = Time.time + spawnInterval;
         }
     }
 
-    private void SpawnWaveIfPlayerInRange()
+    private void SpawnWaveInHiddenPoints()
     {
-        if (enemyPrefabs.Length > 0 && spawnPoints.Length > 0 && player != null)
+        if (enemyPrefabs.Length > 0 && spawnPoints.Length > 0)
         {
             foreach (Transform spawnPoint in spawnPoints)
             {
-                float distanceToPlayer = Vector3.Distance(player.position, spawnPoint.position);
-                if (distanceToPlayer <= detectionRadius)
+                if (IsPointOutsideCameraView(spawnPoint.position))
                 {
                     int randomEnemyIndex = Random.Range(0, enemyPrefabs.Length);
                     GameObject enemyPrefab = enemyPrefabs[randomEnemyIndex];
 
                     Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
 
-                    Debug.Log($"Pojawi³ siê przeciwnik: {enemyPrefab.name} w punkcie: {spawnPoint.name}, gracz w zasiêgu ({distanceToPlayer:F2}m)");
+                    Debug.Log($"Pojawi³ siê przeciwnik: {enemyPrefab.name} w punkcie: {spawnPoint.name}, który jest poza widokiem kamery.");
+                }
+                else
+                {
+                    Debug.Log($"Punkt spawnu {spawnPoint.name} pominiêty, znajduje siê w widoku kamery.");
                 }
             }
         }
+    }
+
+    private bool IsPointOutsideCameraView(Vector3 point)
+    {
+        if (mainCamera == null) return true;
+
+        // Pobierz obszar widzenia kamery (frustum)
+        Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(mainCamera);
+
+        // Stwórz niewielki AABB (oœ spawnu jako punkt)
+        Bounds bounds = new Bounds(point, Vector3.one * 0.1f);
+
+        // SprawdŸ, czy AABB jest poza obszarem widzenia kamery
+        return !GeometryUtility.TestPlanesAABB(frustumPlanes, bounds);
     }
 }
