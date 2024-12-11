@@ -5,12 +5,11 @@ using System.Collections.Generic;
 public class PlayerExperience : MonoBehaviour
 {
     public Slider experienceSlider;       // Referencja do paska doświadczenia
-
+    public EnemyEvolvingSystem enemyEvolvingSystem;
     public TextMeshProUGUI levelText;     // Referencja do tekstu poziomu
     public float maxExperience = 100;     // Maksymalna wartość doświadczenia
     private int currentExperience = 0;    // Aktualne doświadczenie
     public int currentLevel = 1;         // Aktualny poziom gracza
-
     public GameObject LevelUpgradeUI;
     public float healthIncreaseAmount = 1.1f; // Ilość zwiększanego zdrowia przy awansie
 
@@ -18,7 +17,8 @@ public class PlayerExperience : MonoBehaviour
 
     public float damageIncreaseAmount = 1.5f;
 
-    private Health playerHealth;          // Referencja do komponentu Health
+    private Health playerHealth;          // Referencja do komponentu Health Gracza
+    
 
     void Start()
     {
@@ -51,7 +51,7 @@ public class PlayerExperience : MonoBehaviour
         UpdateExperienceBar();
     }
 
-    private void LevelUp()
+    public void LevelUp()
     {
         currentLevel++;  // Zwiększenie poziomu
         Debug.Log("Level Up! Nowy poziom: " + currentLevel);
@@ -80,7 +80,11 @@ public class PlayerExperience : MonoBehaviour
                     }
                 }   
         }
-
+        // Wywołanie ulepszenia przeciwników
+        if (enemyEvolvingSystem != null)
+        {
+            enemyEvolvingSystem.LevelUpEnemies();
+        }
         // Zwiększenie wymagań na kolejny poziom o 40%
         maxExperience = maxExperience * 1.4f;
         // Aktualizacja paska doświadczenia do nowego poziomu

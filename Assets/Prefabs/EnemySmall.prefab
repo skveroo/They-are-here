@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 4501198824847804477}
   - component: {fileID: 7789250345528224221}
   - component: {fileID: 2104784441927365486}
+  - component: {fileID: 1275331072948414668}
   m_Layer: 0
   m_Name: EnemySmall
   m_TagString: Enemy
@@ -216,6 +217,22 @@ MonoBehaviour:
   targetTag: Player
   damageInterval: 1
   proximityRange: 1
+--- !u!114 &1275331072948414668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2225750629283850600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a0d014e5d6ff0a49a7615e4dbd0e7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyHealth: {fileID: 4501198824847804477}
+  healthIncreaseAmount: 1.2
+  enemyDamage: {fileID: 2104784441927365486}
+  damageIncreaseAmount: 1.3
 --- !u!1001 &1949435056468943745
 PrefabInstance:
   m_ObjectHideFlags: 0
