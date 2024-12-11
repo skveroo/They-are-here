@@ -63,7 +63,21 @@ public class PlayerExperience : MonoBehaviour
             // Zwiększenie obrażeń każdej broni
             foreach (Weapon weapon in weapons)
                 {
-                    weapon.damageAmount *= damageIncreaseAmount;
+                     // Skalowanie obrażeń w oparciu o poziom gracza
+                    switch (weapon.name)
+                    {
+                        case "AutomaticRifle":
+                            weapon.damageAmount = damageIncreaseAmount * weapon.damageAmount;
+                            break;
+
+                        case "Pistol":
+                            weapon.damageAmount = damageIncreaseAmount * weapon.damageAmount;
+                            break;
+
+                        default:
+                            weapon.damageAmount = 0f;
+                            break;
+                    }
                 }   
         }
 
@@ -96,4 +110,5 @@ public class PlayerExperience : MonoBehaviour
             levelText.text = "Level: " + currentLevel;
         }
     }
+    
 }

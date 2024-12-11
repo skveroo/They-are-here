@@ -22,6 +22,10 @@ public class Health : MonoBehaviour
     {
         UpdateHealthUI();
     }
+    void Update()
+    {
+        UpdateHealthUI();
+    }
 
     // Funkcja przyjmowania obrażeń
     public void TakeDamage(float damage)
@@ -92,6 +96,7 @@ public class Health : MonoBehaviour
     {
         if (healthSlider != null)
         {
+            healthSlider.maxValue = maxHealth;
             healthSlider.value = health;
         }
 

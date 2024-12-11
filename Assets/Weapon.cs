@@ -30,6 +30,24 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float bulletSpeed = 20f;
     public float damageAmount;
     public PlayerExperience playerExp;
+
+    private void Start()
+    {
+                            switch (currentWeapon.name)
+                    {
+                        case "AutomaticRifle":
+                            damageAmount = 25f;
+                            break;
+
+                        case "Pistol":
+                            damageAmount = 15f;
+                            break;
+
+                        default:
+                            damageAmount = 0f;
+                            break;
+                    }
+    }
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -152,20 +170,6 @@ public class Weapon : MonoBehaviour
                 {
                     weaponDetection();
                     
-                    switch (currentWeapon.name)
-                    {
-                        case "AutomaticRifle":
-                            damageAmount = (float)Pow(1.5f,(playerExp.currentLevel-1))*25f;
-                            break;
-
-                        case "Pistol":
-                            damageAmount = (float)Pow(1.5f,(playerExp.currentLevel-1))*15f;
-                            break;
-
-                        default:
-                            damageAmount = 0f;
-                            break;
-                    }
                     enemyHealth.TakeDamage(damageAmount);
                 }
             }
