@@ -80,11 +80,7 @@ public class PlayerExperience : MonoBehaviour
                     }
                 }   
         }
-        // Wywołanie ulepszenia przeciwników
-        if (enemyEvolvingSystem != null)
-        {
-            enemyEvolvingSystem.LevelUpEnemies();
-        }
+    
         // Zwiększenie wymagań na kolejny poziom o 40%
         maxExperience = maxExperience * 1.4f;
         // Aktualizacja paska doświadczenia do nowego poziomu

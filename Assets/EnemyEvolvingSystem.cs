@@ -3,53 +3,37 @@ using UnityEngine;
 
 public class EnemyEvolvingSystem : MonoBehaviour
 {
-    public float healthIncreaseAmount = 1.4f; // Współczynnik wzrostu zdrowia
-    public float damageIncreaseAmount = 1.7f; // Współczynnik wzrostu obrażeń
+   public float healthIncreaseAmount = 1.4f; // Współczynnik skalowania zdrowia
+    public float damageIncreaseAmount = 1.7f; // Współczynnik skalowania obrażeń
 
-    private List<Health> enemiesHealth = new List<Health>(); // Lista zdrowia przeciwników
-    private List<DamageDealer> enemiesDamage = new List<DamageDealer>(); // Lista obrażeń przeciwników
+    private Health enemyHealth;
+    private DamageDealer enemyDamage;
+    private PlayerExperience playerExperience;
 
     private void Start()
     {
-        // Opcjonalnie: znajdź wszystkich przeciwników na początku
-        RegisterAllEnemies();
-    }
+        // Znalezienie komponentów Health i DamageDealer
+        enemyHealth = GetComponent<Health>();
+        enemyDamage = GetComponent<DamageDealer>();
 
-    public void RegisterEnemy(Health enemyHealth, DamageDealer enemyDamage)
-    {
-        if (!enemiesHealth.Contains(enemyHealth))
+        // Znalezienie gracza i jego poziomu doświadczenia
+        playerExperience = FindObjectOfType<PlayerExperience>();
+
+        if (playerExperience != null && enemyHealth != null && enemyDamage != null)
         {
-            enemiesHealth.Add(enemyHealth);
-        }
-        if (!enemiesDamage.Contains(enemyDamage))
-        {
-            enemiesDamage.Add(enemyDamage);
+            ScaleStats(playerExperience.currentLevel);
         }
     }
 
-    public void LevelUpEnemies()
+    private void ScaleStats(int playerLevel)
     {
-        foreach (var enemyHealth in enemiesHealth)
-        {
-            enemyHealth.maxHealth *= healthIncreaseAmount; // Aktualizacja obecnego zdrowia (jeśli metoda istnieje)
-        }
+        // Skalowanie zdrowia
+        float healthMultiplier = Mathf.Pow(healthIncreaseAmount, playerLevel - 1);
+        enemyHealth.maxHealth *= healthMultiplier; 
+        enemyHealth.health = enemyHealth.maxHealth; // Aktualizacja obecnego zdrowia do maksymalnego
 
-        foreach (var enemyDamage in enemiesDamage)
-        {
-            enemyDamage.damageAmount *= damageIncreaseAmount;
-        }
-    }
-
-    private void RegisterAllEnemies()
-    {
-        var enemyHealthComponents = FindObjectsOfType<Health>();
-        foreach (var enemyHealth in enemyHealthComponents)
-        {
-            var enemyDamage = enemyHealth.GetComponent<DamageDealer>();
-            if (enemyDamage != null)
-            {
-                RegisterEnemy(enemyHealth, enemyDamage);
-            }
-        }
+        // Skalowanie obrażeń
+        float damageMultiplier = Mathf.Pow(damageIncreaseAmount, playerLevel - 1);
+        enemyDamage.damageAmount *= damageMultiplier;
     }
 }
