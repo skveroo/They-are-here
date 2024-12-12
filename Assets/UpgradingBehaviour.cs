@@ -40,6 +40,7 @@ public class UpgradingBehaviour : MonoBehaviour
     public void UpgradeHealth()
     {
         playerHealth.maxHealth *= healthIncreaseAmount;
+        playerHealth.health = playerHealth.maxHealth;
         
     }
     public void CloseScreen()
