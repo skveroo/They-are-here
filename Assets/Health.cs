@@ -13,7 +13,7 @@ public class Health : MonoBehaviour
     public GameObject experienceOrbPrefab; // Prefab kulki doświadczenia
     public int numberOfOrbs = 3; // Liczba kulek doświadczenia do wygenerowania
     public int experiencePerOrb = 5;  // Ilość doświadczenia za jedną kulkę
-
+    public float totalTimePlayed = 0f;
     // UI Elements
     public Slider healthSlider;
     public TMP_Text healthText;
@@ -25,6 +25,8 @@ public class Health : MonoBehaviour
     void Update()
     {
         UpdateHealthUI();
+        // Dodaj czas z ostatniej klatki
+        totalTimePlayed += Time.deltaTime;
     }
 
     // Funkcja przyjmowania obrażeń

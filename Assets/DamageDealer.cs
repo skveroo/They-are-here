@@ -8,6 +8,7 @@ public class DamageDealer : MonoBehaviour
     public float proximityRange = 1.5f;
     private bool playerInArea = false;
     private float damageTimer = 0f;
+    public float damageTaken = 0f;
 
 
     private void OnTriggerEnter(Collider other)
@@ -87,6 +88,7 @@ public class DamageDealer : MonoBehaviour
         {
             playerHealth.TakeDamage(damageAmount);
             Debug.Log("Player took " + damageAmount + " damage.");
+            StatsManager.Instance.AddDamageTaken(damageAmount);
         }
     }
 }

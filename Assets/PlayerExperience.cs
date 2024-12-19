@@ -12,7 +12,7 @@ public class PlayerExperience : MonoBehaviour
     public int currentLevel = 1;         // Aktualny poziom gracza
     public GameObject LevelUpgradeUI;
     public float healthIncreaseAmount = 1.1f; // Ilość zwiększanego zdrowia przy awansie
-
+    public float expTaken = 0f;
     public List<Weapon> weapons;    // Referencja do broni
 
     public float damageIncreaseAmount = 1.5f;
@@ -39,7 +39,7 @@ public class PlayerExperience : MonoBehaviour
     public void AddExperience(int amount)
     {
         currentExperience += amount;
-
+        expTaken += amount;
         // Ograniczenie doświadczenia do maksymalnej wartości
         if (currentExperience >= maxExperience)
         {
