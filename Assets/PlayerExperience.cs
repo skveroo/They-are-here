@@ -11,11 +11,11 @@ public class PlayerExperience : MonoBehaviour
     private int currentExperience = 0;    // Aktualne doświadczenie
     public int currentLevel = 1;         // Aktualny poziom gracza
     public GameObject LevelUpgradeUI;
-    public float healthIncreaseAmount = 1.1f; // Ilość zwiększanego zdrowia przy awansie
+    public float healthIncreaseAmount = 1.25f; // Ilość zwiększanego zdrowia przy awansie
     public float expTaken = 0f;
     public List<Weapon> weapons;    // Referencja do broni
 
-    public float damageIncreaseAmount = 1.5f;
+    public float damageIncreaseAmount = 1.33f;
 
     private Health playerHealth;          // Referencja do komponentu Health Gracza
     

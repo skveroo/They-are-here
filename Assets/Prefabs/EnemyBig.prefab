@@ -263,6 +263,7 @@ MonoBehaviour:
   experienceOrbPrefab: {fileID: 1905205939344476213, guid: a5538c1623a9eaa4299662ffd251df9d, type: 3}
   numberOfOrbs: 3
   experiencePerOrb: 21
+  totalTimePlayed: 0
   healthSlider: {fileID: 0}
   healthText: {fileID: 0}
 --- !u!114 &4402118469367496145
@@ -280,6 +281,8 @@ MonoBehaviour:
   damageAmount: 15
   targetTag: Player
   damageInterval: 1
+  proximityRange: 1.5
+  damageTaken: 0
 --- !u!195 &6647454562914160668
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -314,8 +317,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a0d014e5d6ff0a49a7615e4dbd0e7ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthIncreaseAmount: 1.4
-  damageIncreaseAmount: 1.7
+  healthIncreaseAmount: 1.5
+  damageIncreaseAmount: 1.25
 --- !u!136 &799382283283025859
 CapsuleCollider:
   m_ObjectHideFlags: 0

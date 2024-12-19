@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class EnemyEvolvingSystem : MonoBehaviour
 {
-   public float healthIncreaseAmount = 1.4f; // Współczynnik skalowania zdrowia
-    public float damageIncreaseAmount = 1.7f; // Współczynnik skalowania obrażeń
+   public float healthIncreaseAmount = 1.5f; // Współczynnik skalowania zdrowia
+    public float damageIncreaseAmount = 1.25f; // Współczynnik skalowania obrażeń
 
     private Health enemyHealth;
     private DamageDealer enemyDamage;
@@ -28,12 +28,12 @@ public class EnemyEvolvingSystem : MonoBehaviour
     private void ScaleStats(int playerLevel)
     {
         // Skalowanie zdrowia
-        float healthMultiplier = Mathf.Pow(healthIncreaseAmount, playerLevel - 1);
-        enemyHealth.maxHealth *= healthMultiplier; 
+        //float healthMultiplier = Mathf.Pow(healthIncreaseAmount, playerLevel - 1);
+        enemyHealth.maxHealth = enemyHealth.maxHealth * healthIncreaseAmount; 
         enemyHealth.health = enemyHealth.maxHealth; // Aktualizacja obecnego zdrowia do maksymalnego
 
         // Skalowanie obrażeń
-        float damageMultiplier = Mathf.Pow(damageIncreaseAmount, playerLevel - 1);
-        enemyDamage.damageAmount *= damageMultiplier;
+        //float damageMultiplier = Mathf.Pow(damageIncreaseAmount, playerLevel - 1);
+        enemyDamage.damageAmount = enemyDamage.damageAmount * damageIncreaseAmount;
     }
 }

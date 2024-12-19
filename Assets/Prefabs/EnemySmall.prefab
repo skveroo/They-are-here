@@ -165,8 +165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a0d014e5d6ff0a49a7615e4dbd0e7ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthIncreaseAmount: 1.2
-  damageIncreaseAmount: 1.3
+  healthIncreaseAmount: 1.5
+  damageIncreaseAmount: 1.25
 --- !u!114 &3853606600106502745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,6 +183,7 @@ MonoBehaviour:
   targetTag: Player
   damageInterval: 1
   proximityRange: 1
+  damageTaken: 0
 --- !u!114 &7106627561494736364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,6 +204,7 @@ MonoBehaviour:
   experienceOrbPrefab: {fileID: 1905205939344476213, guid: a5538c1623a9eaa4299662ffd251df9d, type: 3}
   numberOfOrbs: 3
   experiencePerOrb: 7
+  totalTimePlayed: 0
   healthSlider: {fileID: 0}
   healthText: {fileID: 0}
 --- !u!114 &4523916663857318215
@@ -258,7 +260,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
