@@ -11,7 +11,7 @@ public class Weapon : MonoBehaviour
     public int ammoLeft;
     private int bulletsShot;
     private bool isShooting, readyToShoot, isReloading;
-
+    public float damageDealt = 0f;
     public GameObject player;
     public TMP_Text ammoInfo;
     [SerializeField] private int bulletsPerBurst;
@@ -173,6 +173,7 @@ public class Weapon : MonoBehaviour
                     weaponDetection();
                     
                     enemyHealth.TakeDamage(damageAmount);
+					damageDealt +=damageAmount;
                 }
             }
             else

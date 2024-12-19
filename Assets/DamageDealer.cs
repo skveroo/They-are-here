@@ -7,10 +7,10 @@ public class DamageDealer : MonoBehaviour
     public string targetTag = "Player";
     public float damageInterval = 1f;
     public float proximityRange = 1.5f;
-
     private bool playerInArea = false;
     private Coroutine damageCoroutine;
-
+	public float damageTaken = 0f;
+	
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(targetTag))
@@ -37,6 +37,7 @@ public class DamageDealer : MonoBehaviour
         {
             playerHealth.TakeDamage(damageAmount);
             Debug.Log("Player took " + damageAmount + " damage.");
+			StatsManager.Instance.AddDamageTaken(damageAmount);
         }
     }
 
