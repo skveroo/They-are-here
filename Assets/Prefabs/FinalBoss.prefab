@@ -164,13 +164,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lowHealth: 0
-  health: 500
-  maxHealth: 500
+  health: 10000
+  maxHealth: 10000
   enemyTag: Enemy
   healthBar: {fileID: 2130751229811178059}
   experienceOrbPrefab: {fileID: 1905205939344476213, guid: a5538c1623a9eaa4299662ffd251df9d, type: 3}
   numberOfOrbs: 3
   experiencePerOrb: 5
+  totalTimePlayed: 0
   healthSlider: {fileID: 0}
   healthText: {fileID: 0}
 --- !u!114 &2766385326441250439
@@ -185,7 +186,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a2ae8eac66df53498ff03a0009467cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  endGameUI: {fileID: 0}
+  isDefeated: 0
+  mainObjective: {fileID: 0}
 --- !u!114 &3739371953839751694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,6 +204,7 @@ MonoBehaviour:
   targetTag: Player
   damageInterval: 1
   proximityRange: 1.5
+  damageTaken: 0
 --- !u!1001 &2272731839956861287
 PrefabInstance:
   m_ObjectHideFlags: 0
