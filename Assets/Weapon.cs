@@ -42,7 +42,9 @@ public class Weapon : MonoBehaviour
                         case "Pistol":
                             damageAmount = 15f;
                             break;
-
+                        case "Shotgun":
+                            damageAmount = 30f;
+                            break;
                         default:
                             damageAmount = 0f;
                             break;
@@ -104,7 +106,7 @@ public class Weapon : MonoBehaviour
         float closestDistance = Mathf.Infinity;
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.CompareTag("Transparent")|| hit.collider.CompareTag("Room"))
+            if (hit.collider.CompareTag("Transparent") || hit.collider.CompareTag("Room"))
             {
                 continue;
             }
@@ -126,7 +128,7 @@ public class Weapon : MonoBehaviour
         bulletOrigin.rotation = Quaternion.LookRotation(directionToTarget);
         if (currentWeapon != null)
         {
-            currentWeapon.transform.rotation = Quaternion.Slerp(currentWeapon.transform.rotation, Quaternion.LookRotation(directionToTarget, Vector3.up), Time.deltaTime * 10f);
+            //currentWeapon.transform.rotation = Quaternion.Slerp(currentWeapon.transform.rotation, Quaternion.LookRotation(directionToTarget, Vector3.up), Time.deltaTime * 10f);
         }
     }
 
@@ -149,7 +151,7 @@ public class Weapon : MonoBehaviour
         float closestDistance = Mathf.Infinity;
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.CompareTag("Transparent"))
+            if (hit.collider.CompareTag("Transparent")|| hit.collider.CompareTag("Room"))
             {
                 continue;
             }

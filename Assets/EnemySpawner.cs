@@ -64,14 +64,8 @@ public class EnemySpawner : MonoBehaviour
     private bool IsPointOutsideCameraView(Vector3 point)
     {
         if (mainCamera == null) return true;
-
-        // Pobierz obszar widzenia kamery (frustum)
         Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(mainCamera);
-
-        // Stwórz niewielki AABB (oœ spawnu jako punkt)
         Bounds bounds = new Bounds(point, Vector3.one * 0.1f);
-
-        // SprawdŸ, czy AABB jest poza obszarem widzenia kamery
         return !GeometryUtility.TestPlanesAABB(frustumPlanes, bounds);
     }
 }

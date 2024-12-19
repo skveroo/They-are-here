@@ -2,22 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
 public class HealthBar : MonoBehaviour
 {
     public Slider healthBar;
 
     private Health healthComponent;
+    private Coroutine fadeCoroutine;
 
     private void Start()
     {
-        // Jeśli HealthBar jest przypisany do gracza, znajdź jego komponent zdrowia
+
         if (gameObject.CompareTag("Player"))
         {
             healthComponent = GameObject.FindGameObjectWithTag("Player").GetComponent<Health>();
         }
         else
         {
-            // Przypisz komponent Health do obiektu, do którego jest przypięty pasek zdrowia (np. Enemy)
+
             healthComponent = GetComponentInParent<Health>();
         }
 
@@ -30,22 +32,80 @@ public class HealthBar : MonoBehaviour
         {
             Debug.LogError("Health component or HealthBar Slider not found.");
         }
+
+        SetChildrenAlpha(0f);
     }
 
-    void Update()
+    private void Update()
     {
-        transform.rotation = Quaternion.identity; // Brak rotacji
+        transform.rotation = Quaternion.identity;
     }
 
-public void SetHealth(float hp)
-{
-    if (healthBar != null)
+    public void SetHealth(float hp)
     {
-        if (hp < 0) hp = 0;  // Upewnij się, że zdrowie nie jest mniejsze od 0
-        if (hp > healthBar.maxValue) hp = healthBar.maxValue;  // Zapobiega przekroczeniu maxValue
+        if (healthBar != null)
+        {
+            if (hp < 0) hp = 0;
+            if (hp > healthBar.maxValue) hp = healthBar.maxValue;
 
-        healthBar.value = hp;
+            healthBar.value = hp;
+
+
+            if (fadeCoroutine != null)
+            {
+                StopCoroutine(fadeCoroutine);
+            }
+
+
+            fadeCoroutine = StartCoroutine(FadeHealthBar(1f, 0f, 5f));
+        }
     }
-}
 
+    private IEnumerator FadeHealthBar(float targetAlphaIn, float targetAlphaOut, float delay)
+    {
+
+        yield return StartCoroutine(FadeToAlpha(targetAlphaIn, 0.5f));
+
+
+        yield return new WaitForSeconds(delay);
+
+
+        yield return StartCoroutine(FadeToAlpha(targetAlphaOut, 0.5f));
+    }
+
+    private IEnumerator FadeToAlpha(float targetAlpha, float duration)
+    {
+        float startAlpha = GetCurrentAlpha();
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsed / duration);
+            SetChildrenAlpha(newAlpha);
+            yield return null;
+        }
+
+        SetChildrenAlpha(targetAlpha);
+    }
+
+    private float GetCurrentAlpha()
+    {
+        Image[] childImages = GetComponentsInChildren<Image>();
+        if (childImages.Length > 0)
+        {
+            return childImages[0].color.a;
+        }
+        return 1f;
+    }
+
+    private void SetChildrenAlpha(float alpha)
+    {
+        foreach (Image childImage in GetComponentsInChildren<Image>())
+        {
+            Color color = childImage.color;
+            color.a = alpha;
+            childImage.color = color;
+        }
+    }
 }
