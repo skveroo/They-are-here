@@ -23,11 +23,11 @@ public class FlickeringLight : MonoBehaviour
         if (lightComponent != null)
         {
             lightComponent.enabled = false;
-            timeDelay = Random.Range(0.01f, 1f);
+            timeDelay = Random.Range(1f, 5f);
             yield return new WaitForSeconds(timeDelay);
 
             lightComponent.enabled = true;
-            timeDelay = Random.Range(0.01f, 1f);
+            timeDelay = Random.Range(0.2f, 1f);
             yield return new WaitForSeconds(timeDelay);
         }
 
