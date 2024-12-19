@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI; // Dodaj to, aby używać UI
+using TMPro;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
@@ -13,10 +15,29 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     public float drag = 5f;
 
+    private bool isSprinting = false;
+    public float sprintSpeedMultiplier = 2f;
+    public float baseSpeed;
+
+    // Mechanika staminy
+    public float maxStamina = 100f;
+    public float stamina = 100f;
+    public float staminaDrainRate = 20f;
+    public float staminaRegenRate = 10f;
+    public float minSprintStamina = 10f;
+
+    // UI Elements
+    public Slider staminaSlider; // Referencja do slidera
+    public TMP_Text staminaText;     // Referencja do tekstu
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.drag = drag;
+        baseSpeed = speed;
+
+        // Inicjalizacja UI
+        UpdateStaminaUI();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -29,11 +50,26 @@ public class PlayerController : MonoBehaviour
         mouseLook = context.ReadValue<Vector2>();
     }
 
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        if (context.started && stamina > minSprintStamina)
+        {
+            isSprinting = true;
+        }
+        else if (context.canceled)
+        {
+            isSprinting = false;
+        }
+    }
+
     private void Update()
     {
-        if (PauseMenu.GameIsPaused == true) return;
+        if (PauseMenu.GameIsPaused) return;
+
         UpdateRotationToCursor();
         MovePlayer();
+        HandleStamina(); // Obsługa staminy
+        UpdateStaminaUI(); // Aktualizacja UI
     }
 
     private void UpdateRotationToCursor()
@@ -75,6 +111,55 @@ public class PlayerController : MonoBehaviour
         Vector3 movement = new Vector3(move.x, 0f, move.y).normalized;
         rb.angularVelocity = Vector3.zero;
 
+        if (isSprinting && stamina > minSprintStamina)
+        {
+            speed = baseSpeed * sprintSpeedMultiplier;
+        }
+        else
+        {
+            speed = baseSpeed;
+            isSprinting = false;
+        }
+
         rb.velocity = new Vector3(movement.x * speed, rb.velocity.y, movement.z * speed);
+    }
+
+    private void HandleStamina()
+    {
+        if (isSprinting)
+        {
+            stamina -= staminaDrainRate * Time.deltaTime;
+            if (stamina <= 0)
+            {
+                stamina = 0;
+                isSprinting = false;
+            }
+        }
+        else
+        {
+            if (stamina < maxStamina)
+            {
+                stamina += staminaRegenRate * Time.deltaTime;
+                if (stamina > maxStamina)
+                {
+                    stamina = maxStamina;
+                }
+            }
+        }
+    }
+
+    private void UpdateStaminaUI()
+    {
+        // Aktualizacja wartości slidera
+        if (staminaSlider != null)
+        {
+            staminaSlider.value = stamina;
+        }
+
+        // Aktualizacja tekstu staminy
+        if (staminaText != null)
+        {
+            staminaText.text = "Stamina: " + $"{Mathf.RoundToInt(stamina)} / {Mathf.RoundToInt(maxStamina)}";
+        }
     }
 }

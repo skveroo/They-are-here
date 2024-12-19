@@ -6,12 +6,13 @@ public class EnemyAI : MonoBehaviour
     private NavMeshAgent agent;   // Komponent NavMeshAgent
     private Transform player;     // Transform gracza
 
-    //[SerializeField] private float detectionRadius = 50f;  // Zasięg detekcji gracza
+    [SerializeField] private float detectionRadius = 50f;  // Zasięg detekcji gracza
     [SerializeField] private float randomPointRange = 3f;  // Zakres losowego punktu wokół gracza
     [SerializeField] private float separationRadius = 2f;  // Promień separacji od innych wrogów
     [SerializeField] private float repathTime = 1f;        // Czas pomiędzy aktualizacjami ścieżki
 
     private float nextPathUpdate = 0f;
+    private bool isCollidingWithPlayer = false; // Flag to track collision status
 
     void Start()
     {
@@ -31,12 +32,12 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        if (player != null)
+        if (player != null && !isCollidingWithPlayer)  // Only move if not colliding with the player
         {
             float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
             // Jeśli gracz jest w zasięgu detekcji, AI porusza się w jego kierunku
-            if (/*distanceToPlayer <= detectionRadius &&*/ Time.time >= nextPathUpdate)
+            if (distanceToPlayer <= detectionRadius && Time.time >= nextPathUpdate)
             {
                 Vector3 targetPosition = GetRandomPointAroundPlayer();
                 Vector3 separation = GetSeparationVector();
@@ -85,5 +86,25 @@ public class EnemyAI : MonoBehaviour
         }
 
         return separationVector.normalized * separationRadius;
+    }
+
+    // Detects collision with an object tagged as "Player" and stops movement
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            isCollidingWithPlayer = true; // Stop movement on collision with player
+            agent.isStopped = true;
+        }
+    }
+
+    // Detects when the collision ends (player is no longer colliding)
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            isCollidingWithPlayer = false; // Resume movement when player moves away
+            agent.isStopped = false;
+        }
     }
 }

@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Health : MonoBehaviour
 {
@@ -12,29 +14,47 @@ public class Health : MonoBehaviour
     public int numberOfOrbs = 3; // Liczba kulek doświadczenia do wygenerowania
     public int experiencePerOrb = 5;  // Ilość doświadczenia za jedną kulkę
 
-    // Funkcja przyjmowania obrażeń
-public void TakeDamage(float damage)
-{
+    // UI Elements
+    public Slider healthSlider;
+    public TMP_Text healthText;
 
-    health -= damage;
-    healthBar.SetHealth(health);
-    
-    if (health <= 0)
+    void Start()
     {
-        Die();
+        UpdateHealthUI();
     }
-}
+    void Update()
+    {
+        UpdateHealthUI();
+    }
 
-public void IncreaseMaxHealthAndUpdateHealth(float amount)
-{
-    maxHealth = maxHealth * amount;
-    health = maxHealth;
-    Debug.Log("Nowy level, nowe życie! Tyle masz teraz maksymalnego życia: " + health);
-}
+    // Funkcja przyjmowania obrażeń
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        if (health < lowHealth) health = lowHealth;
+        if (!gameObject.CompareTag("Player"))
+            healthBar.SetHealth(health);
+        UpdateHealthUI();
+
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    public void IncreaseMaxHealthAndUpdateHealth(float amount)
+    {
+        maxHealth = maxHealth * amount;
+        health = maxHealth;
+        UpdateHealthUI(); // Aktualizacja UI po zwiększeniu zdrowia
+        Debug.Log("Nowy level, nowe życie! Tyle masz teraz maksymalnego życia: " + health);
+    }
+
     // Funkcja śmierci
     private void Die()
     {
         endConditions.NotifyObjectDestroyed(gameObject);
+
         // Jeśli to przeciwnik, generujemy kulki doświadczenia
         if (tag == enemyTag)
         {
@@ -58,7 +78,7 @@ public void IncreaseMaxHealthAndUpdateHealth(float amount)
         {
             // Losowanie pozycji w pobliżu przeciwnika
             Vector3 spawnPosition = transform.position + Random.insideUnitSphere * 0.5f;
-            spawnPosition.y = transform.position.y;  // Ustawienie wysokości na poziomie przeciwnika
+            spawnPosition.y = transform.position.y;  //Ustawienie wysokości na poziomie przeciwnika
 
             // Tworzenie kulki doświadczenia
             GameObject orb = Instantiate(experienceOrbPrefab, spawnPosition, Quaternion.identity);
@@ -69,6 +89,20 @@ public void IncreaseMaxHealthAndUpdateHealth(float amount)
             {
                 experienceOrbScript.experienceAmount = experiencePerOrb;
             }
+        }
+    }
+
+    private void UpdateHealthUI()
+    {
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = health;
+        }
+
+        if (healthText != null)
+        {
+            healthText.text = "Health: " + $"{Mathf.RoundToInt(health)} / {Mathf.RoundToInt(maxHealth)}";
         }
     }
 }

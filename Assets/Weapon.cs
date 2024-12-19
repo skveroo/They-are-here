@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using TMPro;
+using static System.Math;
 public class Weapon : MonoBehaviour
 {
     private InputMenager controls;
     private RaycastHit rayHit;
-    private int ammoLeft;
+    public int ammoLeft;
     private int bulletsShot;
     private bool isShooting, readyToShoot, isReloading;
 
+    public GameObject player;
+    public TMP_Text ammoInfo;
     [SerializeField] private int bulletsPerBurst;
     [SerializeField] private float bulletRange;
     [SerializeField] private float fireRate, reloadTime;
@@ -19,14 +22,38 @@ public class Weapon : MonoBehaviour
     [SerializeField] private bool isAutomatic;
     [SerializeField] private int magSize;
     [SerializeField] private GameObject bulletHolePrefab;
-    [SerializeField] private GameObject currentWeapon;
+    [SerializeField] public GameObject currentWeapon;
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] string EnemyTag;
     [SerializeField] private Transform bulletOrigin;
     [SerializeField] private GameObject tracerPrefab;
     [SerializeField] private float bulletSpeed = 20f;
+    public float damageAmount;
+    public PlayerExperience playerExp;
+
+    private void Start()
+    {
+                            switch (currentWeapon.name)
+                    {
+                        case "AutomaticRifle":
+                            damageAmount = 25f;
+                            break;
+
+                        case "Pistol":
+                            damageAmount = 15f;
+                            break;
+                        case "Shotgun":
+                            damageAmount = 30f;
+                            break;
+                        default:
+                            damageAmount = 0f;
+                            break;
+                    }
+    }
     private void Awake()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
+        playerExp = player.GetComponent<PlayerExperience>();
         controls = new InputMenager();
         ammoLeft = magSize;
         readyToShoot = true;
@@ -38,11 +65,13 @@ public class Weapon : MonoBehaviour
     private void Update()
     {
         if (PauseMenu.GameIsPaused == true) return;
+        ammoInfo.text = "Ammo: " + ammoLeft + "/" + magSize;
         AlignBulletOriginToAim();
         if (isShooting && readyToShoot && !isReloading && ammoLeft > 0)
         {
             bulletsShot = bulletsPerBurst;
             PerformShot();
+            
         }
     }
 
@@ -77,7 +106,7 @@ public class Weapon : MonoBehaviour
         float closestDistance = Mathf.Infinity;
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.CompareTag("Transparent")|| hit.collider.CompareTag("Room"))
+            if (hit.collider.CompareTag("Transparent") || hit.collider.CompareTag("Room"))
             {
                 continue;
             }
@@ -99,12 +128,13 @@ public class Weapon : MonoBehaviour
         bulletOrigin.rotation = Quaternion.LookRotation(directionToTarget);
         if (currentWeapon != null)
         {
-            currentWeapon.transform.rotation = Quaternion.Slerp(currentWeapon.transform.rotation, Quaternion.LookRotation(directionToTarget, Vector3.up), Time.deltaTime * 10f);
+            //currentWeapon.transform.rotation = Quaternion.Slerp(currentWeapon.transform.rotation, Quaternion.LookRotation(directionToTarget, Vector3.up), Time.deltaTime * 10f);
         }
     }
 
     private void PerformShot()
     {
+        
         readyToShoot = false;
         float x = Random.Range(-horizontalSpread, horizontalSpread);
         float y = Random.Range(-verticalSpread, verticalSpread);
@@ -121,7 +151,7 @@ public class Weapon : MonoBehaviour
         float closestDistance = Mathf.Infinity;
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.CompareTag("Transparent"))
+            if (hit.collider.CompareTag("Transparent")|| hit.collider.CompareTag("Room"))
             {
                 continue;
             }
@@ -141,21 +171,7 @@ public class Weapon : MonoBehaviour
                 if (enemyHealth != null)
                 {
                     weaponDetection();
-                    float damageAmount;
-                    switch (currentWeapon.name)
-                    {
-                        case "AutomaticRifle":
-                            damageAmount = 25f;
-                            break;
-
-                        case "Pistol":
-                            damageAmount = 15f;
-                            break;
-
-                        default:
-                            damageAmount = 0f;
-                            break;
-                    }
+                    
                     enemyHealth.TakeDamage(damageAmount);
                 }
             }

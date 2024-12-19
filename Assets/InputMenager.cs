@@ -71,6 +71,15 @@ public partial class @InputMenager: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""3150730a-5fd3-490e-b65c-c3ec3603c3d4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +181,17 @@ public partial class @InputMenager: IInputActionCollection2, IDisposable
                     ""action"": ""Take"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""26a354f5-25e7-4922-a72c-68f4ed47b9ce"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -185,6 +205,7 @@ public partial class @InputMenager: IInputActionCollection2, IDisposable
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_Take = m_Player.FindAction("Take", throwIfNotFound: true);
+        m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
     }
 
     ~@InputMenager()
@@ -256,6 +277,7 @@ public partial class @InputMenager: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Shoot;
     private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_Take;
+    private readonly InputAction m_Player_Sprint;
     public struct PlayerActions
     {
         private @InputMenager m_Wrapper;
@@ -265,6 +287,7 @@ public partial class @InputMenager: IInputActionCollection2, IDisposable
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputAction @Take => m_Wrapper.m_Player_Take;
+        public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -289,6 +312,9 @@ public partial class @InputMenager: IInputActionCollection2, IDisposable
             @Take.started += instance.OnTake;
             @Take.performed += instance.OnTake;
             @Take.canceled += instance.OnTake;
+            @Sprint.started += instance.OnSprint;
+            @Sprint.performed += instance.OnSprint;
+            @Sprint.canceled += instance.OnSprint;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -308,6 +334,9 @@ public partial class @InputMenager: IInputActionCollection2, IDisposable
             @Take.started -= instance.OnTake;
             @Take.performed -= instance.OnTake;
             @Take.canceled -= instance.OnTake;
+            @Sprint.started -= instance.OnSprint;
+            @Sprint.performed -= instance.OnSprint;
+            @Sprint.canceled -= instance.OnSprint;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -332,5 +361,6 @@ public partial class @InputMenager: IInputActionCollection2, IDisposable
         void OnShoot(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnTake(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
     }
 }

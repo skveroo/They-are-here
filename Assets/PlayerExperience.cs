@@ -1,20 +1,24 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using System.Collections.Generic;
 public class PlayerExperience : MonoBehaviour
 {
     public Slider experienceSlider;       // Referencja do paska doświadczenia
-
+    public EnemyEvolvingSystem enemyEvolvingSystem;
     public TextMeshProUGUI levelText;     // Referencja do tekstu poziomu
     public float maxExperience = 100;     // Maksymalna wartość doświadczenia
     private int currentExperience = 0;    // Aktualne doświadczenie
-    private int currentLevel = 1;         // Aktualny poziom gracza
-
-    public HealthBar health;      // referencja do komponentu HealthBar
+    public int currentLevel = 1;         // Aktualny poziom gracza
+    public GameObject LevelUpgradeUI;
     public float healthIncreaseAmount = 1.1f; // Ilość zwiększanego zdrowia przy awansie
 
-    private Health playerHealth;          // Referencja do komponentu Health
+    public List<Weapon> weapons;    // Referencja do broni
+
+    public float damageIncreaseAmount = 1.5f;
+
+    private Health playerHealth;          // Referencja do komponentu Health Gracza
+    
 
     void Start()
     {
@@ -47,7 +51,7 @@ public class PlayerExperience : MonoBehaviour
         UpdateExperienceBar();
     }
 
-    private void LevelUp()
+    public void LevelUp()
     {
         currentLevel++;  // Zwiększenie poziomu
         Debug.Log("Level Up! Nowy poziom: " + currentLevel);
@@ -56,16 +60,38 @@ public class PlayerExperience : MonoBehaviour
         if (playerHealth != null)
         {
             playerHealth.IncreaseMaxHealthAndUpdateHealth(healthIncreaseAmount);
-            health.SetHealth(playerHealth.health);
-            
-        }
+            // Zwiększenie obrażeń każdej broni
+            foreach (Weapon weapon in weapons)
+                {
+                     // Skalowanie obrażeń w oparciu o poziom gracza
+                    switch (weapon.name)
+                    {
+                        case "AutomaticRifle":
+                            weapon.damageAmount = damageIncreaseAmount * weapon.damageAmount;
+                            break;
 
+                        case "Pistol":
+                            weapon.damageAmount = damageIncreaseAmount * weapon.damageAmount;
+                            break;
+
+                        default:
+                            weapon.damageAmount = 0f;
+                            break;
+                    }
+                }   
+        }
+    
         // Zwiększenie wymagań na kolejny poziom o 40%
         maxExperience = maxExperience * 1.4f;
         // Aktualizacja paska doświadczenia do nowego poziomu
         experienceSlider.maxValue = maxExperience;
         // Aktualizacja tekstu poziomu
         UpdateLevelText();
+        if (currentLevel%5 == 0)
+        {
+            LevelUpgradeUI.SetActive(true);
+            Time.timeScale = 0f;
+        }
 
     }
 
@@ -84,4 +110,5 @@ public class PlayerExperience : MonoBehaviour
             levelText.text = "Level: " + currentLevel;
         }
     }
+    
 }
