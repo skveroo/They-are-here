@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class endConditions : MonoBehaviour
 {
     public GameObject endScreen;
+    public GameObject winScreen;
+    public BossController boss;
     public MonoBehaviour PauseMenu;
     private static endConditions instance;
 
@@ -14,6 +16,16 @@ public class endConditions : MonoBehaviour
         instance = this;
     }
 
+private bool victoryTriggered = false;
+
+public void Update()
+{
+    if (boss != null && boss.isDefeated && !victoryTriggered)
+    {
+        victoryTriggered = true;
+        GameWin();
+    }
+}
     public static void NotifyObjectDestroyed(GameObject obj)
     {
         if (obj.CompareTag("Player"))
@@ -22,7 +34,7 @@ public class endConditions : MonoBehaviour
         }
         else if (obj.CompareTag("mainObjective"))
         {
-            instance.GameWin();
+             instance.GameWin();
         }
         else
         {
@@ -41,6 +53,9 @@ public class endConditions : MonoBehaviour
     {
         Debug.Log("Victory: The main objective has been destroyed.");
         //load next level, end screen
+        Time.timeScale = 0f;
+        winScreen.SetActive(true);
+
     }
 
     public void RestartGame()

@@ -3,7 +3,11 @@ guid: e3440477a484f5a43aefb051fc3df8e8
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - endScreen: {instanceID: 0}
+  - winScreen: {instanceID: 0}
+  - boss: {fileID: 2766385326441250439, guid: d891c73bfb5b66a4486aafefc9d7086a, type: 3}
+  - PauseMenu: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

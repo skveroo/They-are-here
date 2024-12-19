@@ -2,21 +2,36 @@ using UnityEngine;
 
 public class BossController : MonoBehaviour
 {
-    private bool isDefeated = false;
+    public bool isDefeated = false;
+    public GameObject mainObjective; // Możesz przypisać go w inspektorze lub stworzyć dynamicznie.
+
+    void Awake()
+    {
+        // Tworzymy obiekt dynamicznie, jeśli nie został przypisany w inspektorze
+        if (mainObjective == null)
+        {
+            mainObjective = new GameObject("MainObjective");
+            mainObjective.tag = "mainObjective"; // Ustawiamy odpowiedni tag
+        }
+    }
 
     void OnDestroy()
     {
         if (!isDefeated)
         {
             OnBossDefeated();
-            isDefeated = true;
         }
     }
 
-    private void OnBossDefeated()
+    public void OnBossDefeated()
     {
-        Debug.Log("Finalny boss zosta� pokonany! Gratulacje! Koniec gry.");
+        Debug.Log("Finalny boss został pokonany! Gratulacje! Koniec gry.");
+        isDefeated = true;
+
+        // Powiadom system zakończenia gry
+        endConditions.NotifyObjectDestroyed(mainObjective);
+
+        // Zatrzymaj grę
         Time.timeScale = 0f;
     }
 }
-
