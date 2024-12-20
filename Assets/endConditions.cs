@@ -54,7 +54,7 @@ public void Update()
         Debug.Log("Victory: The main objective has been destroyed.");
         //load next level, end screen
         Time.timeScale = 0f;
-        //winScreen.SetActive(true);
+        winScreen.SetActive(true);
 
     }
 
