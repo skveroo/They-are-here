@@ -18,14 +18,18 @@ public class Health : MonoBehaviour
     public Slider healthSlider;
     public TMP_Text healthText;
 
+    // Statyczna zmienna do liczenia zabitych przeciwników
+    public static int enemiesKilled = 0;
+
     void Start()
     {
         UpdateHealthUI();
     }
+
     void Update()
     {
         UpdateHealthUI();
-		// Dodaj czas z ostatniej klatki
+        // Dodaj czas z ostatniej klatki
         totalTimePlayed += Time.deltaTime;
     }
 
@@ -60,6 +64,8 @@ public class Health : MonoBehaviour
         // Jeśli to przeciwnik, generujemy kulki doświadczenia
         if (tag == enemyTag)
         {
+            FindObjectOfType<EnemySpawner>().OnEnemyKilled();
+
             GenerateExperienceOrbs();
         }
 
