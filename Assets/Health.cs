@@ -17,12 +17,14 @@ public class Health : MonoBehaviour
     // UI Elements
     public Slider healthSlider;
     public TMP_Text healthText;
-
+    public AudioSource hitreg;
+    
     // Statyczna zmienna do liczenia zabitych przeciwników
     public static int enemiesKilled = 0;
 
     void Start()
     {
+        
         UpdateHealthUI();
     }
 
@@ -36,6 +38,9 @@ public class Health : MonoBehaviour
     // Funkcja przyjmowania obrażeń
     public void TakeDamage(float damage)
     {
+        hitreg = GetComponent<AudioSource>();
+        
+        hitreg.Play();
         health -= damage;
         if (health < lowHealth) health = lowHealth;
         if (!gameObject.CompareTag("Player"))
@@ -68,11 +73,10 @@ public class Health : MonoBehaviour
 
             GenerateExperienceOrbs();
         }
-
-        // Zniszczenie obiektu (przeciwnika)
         Destroy(gameObject);
+       
     }
-
+    
     // Generowanie kulek doświadczenia po śmierci
     private void GenerateExperienceOrbs()
     {

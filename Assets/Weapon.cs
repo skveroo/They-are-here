@@ -46,7 +46,7 @@ public class Weapon : MonoBehaviour
                             damageAmount = 15f;
                             break;
                         case "Shotgun":
-                            damageAmount = 30f;
+                            damageAmount = 43f;
                             break;
                         default:
                             damageAmount = 0f;

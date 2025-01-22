@@ -8,7 +8,7 @@ public class PauseMenu : MonoBehaviour
     public static bool GameIsPaused = false;
 
     public GameObject pauseMenuUI;
-
+    public AudioSource pauseSound;
     void Start()
     {
         GameIsPaused = false;
@@ -18,6 +18,8 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            pauseSound = GetComponent<AudioSource>();
+            pauseSound.Play();
             if (GameIsPaused)
             {
                 Resume();
