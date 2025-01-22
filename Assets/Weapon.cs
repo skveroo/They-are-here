@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using Random = UnityEngine.Random;
 using static System.Math;
 public class Weapon : MonoBehaviour
 {
@@ -30,9 +31,11 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float bulletSpeed = 20f;
     public float damageAmount;
     public PlayerExperience playerExp;
+    public AudioSource shootAudio1;
 
     private void Start()
     {
+                           
                             switch (currentWeapon.name)
                     {
                         case "AutomaticRifle":
@@ -134,7 +137,7 @@ public class Weapon : MonoBehaviour
 
     private void PerformShot()
     {
-        
+         
         readyToShoot = false;
         float x = Random.Range(-horizontalSpread, horizontalSpread);
         float y = Random.Range(-verticalSpread, verticalSpread);
@@ -183,7 +186,8 @@ public class Weapon : MonoBehaviour
                 Destroy(bulletHole, bulletHoleLifeSpan);
             }
         }
-
+        shootAudio1 = GetComponent<AudioSource>();
+        shootAudio1.Play();
         muzzleFlash.Play();
         ammoLeft--;
         bulletsShot--;

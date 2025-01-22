@@ -85,7 +85,7 @@ public class Health : MonoBehaviour
         for (int i = 0; i < numberOfOrbs; i++)
         {
             // Losowanie pozycji w pobliżu przeciwnika
-            Vector3 spawnPosition = transform.position + Random.insideUnitSphere * 0.5f;
+            Vector3 spawnPosition = transform.position + Random.insideUnitSphere * 5f;
             spawnPosition.y = transform.position.y;  //Ustawienie wysokości na poziomie przeciwnika
 
             // Tworzenie kulki doświadczenia
