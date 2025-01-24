@@ -8,7 +8,7 @@ public class PauseMenu : MonoBehaviour
     public static bool GameIsPaused = false;
 
     public GameObject pauseMenuUI;
-
+    public AudioSource pauseSound;
     void Start()
     {
         GameIsPaused = false;
@@ -18,6 +18,8 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            pauseSound = GetComponent<AudioSource>();
+            pauseSound.Play();
             if (GameIsPaused)
             {
                 Resume();
@@ -32,13 +34,24 @@ public class PauseMenu : MonoBehaviour
     public void Resume ()
     {
         pauseMenuUI.SetActive(false);
+            // Przywrócenie stanu animacji dla wszystkich przeciwników
+        foreach (EnemyAnimationController enemy in FindObjectsOfType<EnemyAnimationController>())
+        {
+            enemy.RestoreAnimationState();
+        }
         Time.timeScale = 1f;
         GameIsPaused = false;
     }
     void Pause ()
     {
         pauseMenuUI.SetActive(true);
+            // Zapisanie stanu animacji dla wszystkich przeciwników
+        foreach (EnemyAnimationController enemy in FindObjectsOfType<EnemyAnimationController>())
+        {
+            enemy.SaveAnimationState();
+        }
         Time.timeScale = 0f;
+
         GameIsPaused = true;
     }
     public void SettingsMenu()

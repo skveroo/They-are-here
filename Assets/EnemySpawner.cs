@@ -11,6 +11,8 @@ public class EnemySpawner : MonoBehaviour
     private float nextSpawnTime = 0f;
     private int waveCount = 0;
     private bool bossSpawned = false;
+    private int enemiesToSpawnInCurrentWave = 0;
+    private int enemiesKilledInCurrentWave = 0;
 
     void Start()
     {
@@ -34,12 +36,16 @@ public class EnemySpawner : MonoBehaviour
 
     void Update()
     {
-        if (Time.time >= nextSpawnTime)
+        if (Time.time >= nextSpawnTime || enemiesKilledInCurrentWave >= enemiesToSpawnInCurrentWave)
         {
             waveCount++;
             Debug.Log($"Fala {waveCount} rozpoczêta!");
 
-            SpawnWaveInHiddenPoints();
+            // Resetowanie licznika zabitych przeciwników w tej fali
+            enemiesKilledInCurrentWave = 0;
+
+            // Resetowanie liczby przeciwników do stworzenia w tej fali
+            enemiesToSpawnInCurrentWave = SpawnWaveInHiddenPoints();
 
             if (waveCount >= 5 && !bossSpawned)
             {
@@ -51,8 +57,10 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    private void SpawnWaveInHiddenPoints()
+    private int SpawnWaveInHiddenPoints()
     {
+        int enemiesSpawnedInWave = 0;
+
         foreach (Transform spawnPoint in spawnPoints)
         {
             if (IsPointOutsideCameraView(spawnPoint.position))
@@ -63,12 +71,15 @@ public class EnemySpawner : MonoBehaviour
                 Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
 
                 Debug.Log($"Pojawi³ siê przeciwnik: {enemyPrefab.name} w punkcie: {spawnPoint.name}.");
+                enemiesSpawnedInWave++;
             }
             else
             {
                 Debug.Log($"Punkt spawnu {spawnPoint.name} pominiêty (w widoku kamery).");
             }
         }
+
+        return enemiesSpawnedInWave;
     }
 
     private void SpawnFinalBoss()
@@ -112,5 +123,10 @@ public class EnemySpawner : MonoBehaviour
 
         // SprawdŸ, czy AABB jest poza obszarem widzenia kamery
         return !GeometryUtility.TestPlanesAABB(frustumPlanes, bounds);
+    }
+
+    public void OnEnemyKilled()
+    {
+        enemiesKilledInCurrentWave++;
     }
 }

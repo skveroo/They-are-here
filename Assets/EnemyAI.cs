@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -5,7 +6,7 @@ public class EnemyAI : MonoBehaviour
 {
     private NavMeshAgent agent;   // Komponent NavMeshAgent
     private Transform player;     // Transform gracza
-
+    public AudioSource enemySound;
     [SerializeField] private float detectionRadius = 50f;  // Zasięg detekcji gracza
     [SerializeField] private float randomPointRange = 3f;  // Zakres losowego punktu wokół gracza
     [SerializeField] private float separationRadius = 2f;  // Promień separacji od innych wrogów
@@ -28,8 +29,23 @@ public class EnemyAI : MonoBehaviour
         {
             Debug.LogError("Brak obiektu gracza z tagiem 'Player'");
         }
+        if (enemySound != null)
+        {
+           // StartCoroutine(PlayEnemySoundAtRandomIntervals());
+        }
     }
-
+    private IEnumerator PlayEnemySoundAtRandomIntervals()
+    {
+        while (true)
+        {
+            float randomDelay = Random.Range(1f, 20f); 
+            yield return new WaitForSeconds(randomDelay);
+            if (enemySound != null && !isCollidingWithPlayer)
+            {
+                enemySound.Play();
+            }
+        }
+    }
     void Update()
     {
         if (player != null && !isCollidingWithPlayer)  // Only move if not colliding with the player
@@ -48,8 +64,11 @@ public class EnemyAI : MonoBehaviour
                 nextPathUpdate = Time.time + repathTime;
             }
         }
+        
     }
-
+    //enemySound = GetComponent<AudioSource>();
+    //enemySound.Play();
+    //
     /// <summary>
     /// Losuje punkt wokół gracza w określonym zakresie.
     /// </summary>

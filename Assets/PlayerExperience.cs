@@ -14,6 +14,7 @@ public class PlayerExperience : MonoBehaviour
     public float healthIncreaseAmount = 1.25f; // Ilość zwiększanego zdrowia przy awansie
     public float expTaken = 0f;
     public List<Weapon> weapons;    // Referencja do broni
+    public AudioSource level;
 
     public float damageIncreaseAmount = 1.33f;
 
@@ -35,11 +36,12 @@ public class PlayerExperience : MonoBehaviour
         // Ustawienie początkowego poziomu w UI
         UpdateLevelText();
     }
-
+    
     public void AddExperience(int amount)
     {
         currentExperience += amount;
         expTaken += amount;
+        
         // Ograniczenie doświadczenia do maksymalnej wartości
         if (currentExperience >= maxExperience)
         {
@@ -53,14 +55,16 @@ public class PlayerExperience : MonoBehaviour
 
     public void LevelUp()
     {
+
         currentLevel++;  // Zwiększenie poziomu
         Debug.Log("Level Up! Nowy poziom: " + currentLevel);
-
+        
         // Zwiększenie maksymalnego zdrowia gracza oraz przywrócenie do pełni zdrowia
         if (playerHealth != null)
         {
             playerHealth.IncreaseMaxHealthAndUpdateHealth(healthIncreaseAmount);
             // Zwiększenie obrażeń każdej broni
+            
             foreach (Weapon weapon in weapons)
                 {
                      // Skalowanie obrażeń w oparciu o poziom gracza
@@ -105,6 +109,8 @@ public class PlayerExperience : MonoBehaviour
 
     private void UpdateLevelText()
     {
+        level = GetComponent<AudioSource>();
+        level.Play();
         if (levelText != null)
         {
             levelText.text = "Level: " + currentLevel;

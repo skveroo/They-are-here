@@ -17,21 +17,30 @@ public class Health : MonoBehaviour
     // UI Elements
     public Slider healthSlider;
     public TMP_Text healthText;
+    public AudioSource hitreg;
+    
+    // Statyczna zmienna do liczenia zabitych przeciwników
+    public static int enemiesKilled = 0;
 
     void Start()
     {
+        
         UpdateHealthUI();
     }
+
     void Update()
     {
         UpdateHealthUI();
-		// Dodaj czas z ostatniej klatki
+        // Dodaj czas z ostatniej klatki
         totalTimePlayed += Time.deltaTime;
     }
 
     // Funkcja przyjmowania obrażeń
     public void TakeDamage(float damage)
     {
+        hitreg = GetComponent<AudioSource>();
+        
+        hitreg.Play();
         health -= damage;
         if (health < lowHealth) health = lowHealth;
         if (!gameObject.CompareTag("Player"))
@@ -60,13 +69,14 @@ public class Health : MonoBehaviour
         // Jeśli to przeciwnik, generujemy kulki doświadczenia
         if (tag == enemyTag)
         {
+            FindObjectOfType<EnemySpawner>().OnEnemyKilled();
+
             GenerateExperienceOrbs();
         }
-
-        // Zniszczenie obiektu (przeciwnika)
         Destroy(gameObject);
+       
     }
-
+    
     // Generowanie kulek doświadczenia po śmierci
     private void GenerateExperienceOrbs()
     {
@@ -79,7 +89,7 @@ public class Health : MonoBehaviour
         for (int i = 0; i < numberOfOrbs; i++)
         {
             // Losowanie pozycji w pobliżu przeciwnika
-            Vector3 spawnPosition = transform.position + Random.insideUnitSphere * 0.5f;
+            Vector3 spawnPosition = transform.position + Random.insideUnitSphere * 5f;
             spawnPosition.y = transform.position.y;  //Ustawienie wysokości na poziomie przeciwnika
 
             // Tworzenie kulki doświadczenia

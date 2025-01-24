@@ -7,7 +7,7 @@ public class EnemyAnimationController : MonoBehaviour
     Animator animator;
     private GameObject target;
     private Vector3 lastPosition;
-
+    private float currentAnimationTime;
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -19,6 +19,14 @@ public class EnemyAnimationController : MonoBehaviour
         }
 
         lastPosition = transform.position;
+    }
+    public void SaveAnimationState()
+    {
+        currentAnimationTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+    }
+    public void RestoreAnimationState()
+    {
+        animator.Play(animator.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, currentAnimationTime);
     }
 
     void Update()
